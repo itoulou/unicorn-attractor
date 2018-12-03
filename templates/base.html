@@ -20,6 +20,7 @@
             <ul class="">
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'profile' %}">{{ user.username.title }}</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
                 <hr>
@@ -43,7 +44,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="{% url 'index' %}">Home</a></li>
-                            <li><a href="#">{{ user.username.title }}</a></li>
+                            <li><a href="{% url 'profile' %}">{{ user.username.title }}</a></li>
                             <li><a href="#">About</a></li>
                             <li><a href="#">Contact</a></li>
                             <hr>

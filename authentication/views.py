@@ -2,6 +2,7 @@ from django.shortcuts import render, reverse, redirect
 from django.contrib import auth, messages
 from authentication.forms import loginForm, registerForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 # Create your views here.
 def index(request):
@@ -65,3 +66,9 @@ def register(request):
     else:    
         register_form = registerForm()
     return render(request, 'register.html', {"register_form": register_form})
+    
+def profile(request):
+    """
+    user can access own profile page
+    """
+    return render(request, 'profile.html')
