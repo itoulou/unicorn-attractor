@@ -30,9 +30,10 @@ def login(request):
             else:
                 login_form.add_error(None, "username or password is incorrect")
     else:
-        login_form = loginForm
+        login_form = loginForm()
     return render(request, 'login.html', {"login_form": login_form})
 
+@login_required
 def logout(request):
     """
     user logout
@@ -46,5 +47,21 @@ def register(request):
     """
     register user page
     """
-    register_form = registerForm()
+    if request.user.is_authenticated:
+        return redirect(reverse('index'))
+    if request.method == "POST":
+        register_form = registerForm(request.POST)
+        
+        if register_form.is_valid():
+            register_form.save()
+            user_registered = auth.authenticate(username=request.POST['username'],
+                                               password=request.POST['password1'])
+            if user_registered:
+                auth.login(user=user_registered, request=request)
+                messages.success(request, "Welcome to Unicorn Attractor ")
+                return redirect(reverse('index'))
+            else:
+                messages.error(request, 'A problem occured, please try to register again')
+    else:    
+        register_form = registerForm()
     return render(request, 'register.html', {"register_form": register_form})
