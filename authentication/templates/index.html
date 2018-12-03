@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Homepage{% endblock %}
 {% block content %}
-index page
+<h1>Home</h1>
+{% if messages %}
+<div>
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock %}
