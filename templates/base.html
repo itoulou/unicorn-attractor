@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
+{% load staticfiles %}
 <html lang="en">
 
 <head>
@@ -8,36 +9,67 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" type="text/css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <nav class="navbar navbar-default">
-        <h1 class="navbar-left"><a href=#>Logo</a></h1>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="{% url 'login' %}">Login</a></li>
-            <li><a href="#">Register</a></li>
-            <li><a href="#">Issues</a></li>
-            <li><a href="#">Requests</a></li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                   <li><a href="#">Home</a></li>
-                   <li><a href="#">About</a></li>
-                   <li><a href="#">Contact</a></li>
-                   <hr>
-                   <li><a href="#">Logout</a></li>
+    <div class="row">
+        <div id="side-nav" class="remove">
+            <ul class="">
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+                <hr>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="hidden-xs hidden-sm">
+            <nav class="navbar navbar-default">
+                <h1 class="navbar-left"><a href="{% url 'index' %}">Logo</a></h1>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li><a href="#">Issues</a></li>
+                    <li><a href="#">Requests</a></li>
+                    <li role="presentation" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'index' %}">Home</a></li>
+                            <li><a href="#">{{ user.username.title }}</a></li>
+                            <li><a href="#">About</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <hr>
+                            <li><a href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                    {% endif %}
                 </ul>
-            </li>
-        </ul>
-    </nav>
+            </nav>
+        </div>
+        <div class="hidden-md hidden-lg">
+            <nav class="navbar navbar-default">
+                <button class="button side-nav-btn glyphicon glyphicon-menu-hamburger btn btn-default"></button>
+                <h1 class="text-center"><a href="{% url 'index' %}">Logo</a></h1>
+            </nav>
+        </div>
+    </div>
     {% block content %}{% endblock %}
     <script type="text/javacript">
         $(document).ready(function(){
-            $(".dropdown").dropdown(); 
+            $(".side-nav-btn").click(function(){
+                $("#side-nav").removeClass("remove"); 
+            });
         });
     </script>
 </body>
