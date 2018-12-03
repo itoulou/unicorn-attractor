@@ -14,6 +14,8 @@ def login(request):
     """
     user login page
     """
+    if request.user.is_authenticated:
+        return redirect(reverse('index'))
     if request.method == "POST":
         login_form = loginForm(request.POST)
         
@@ -24,6 +26,7 @@ def login(request):
             if user_logged_in:
                 auth.login(user=user_logged_in, request=request)
                 messages.success(request, "Logged in as ")
+                return redirect(reverse('index'))
             else:
                 login_form.add_error(None, "username or password is incorrect")
     else:

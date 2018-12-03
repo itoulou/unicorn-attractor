@@ -5,7 +5,7 @@
 {% if messages %}
 <div>
     {% for message in messages %}
-    {{ message }}
+    {{ message }}{{ user.username.title }}
     {% endfor %}
 </div>
 {% endif %}
