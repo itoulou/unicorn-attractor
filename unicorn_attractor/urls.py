@@ -20,6 +20,6 @@ from authentication import urls as authentication_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', index),
+    url(r'^$', index, name="index"),
     url(r'^auth/', include(authentication_urls)),
 ]
