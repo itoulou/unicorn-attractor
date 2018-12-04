@@ -66,11 +66,20 @@
         </div>
     </div>
     {% block content %}{% endblock %}
-    <script type="text/javacript">
+    <script>
         $(document).ready(function(){
-            $(".side-nav-btn").click(function(){
+            $(".side-nav-btn").click(function(e){
+                e.stopPropagation();
                 $("#side-nav").removeClass("remove"); 
             });
+            $("#side-nav").click(function(e){
+                e.stopPropagation(); 
+            });
+            $('body, html').click(function(e){
+                $("#side-nav").addClass("remove");
+            });
+            
+            
         });
     </script>
 </body>
