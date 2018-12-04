@@ -1,4 +1,4 @@
-
+[![Build Status](https://travis-ci.org/itoulou/unicorn-attractor.svg?branch=master)](https://travis-ci.org/itoulou/unicorn-attractor)
      ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
     '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
     |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 

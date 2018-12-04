@@ -1,1 +1,5 @@
+*.pyc
+.~c9
+__pycache__/
 db.sqlite3
+env.py
