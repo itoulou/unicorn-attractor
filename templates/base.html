@@ -115,6 +115,9 @@
             $('body, html').click(function(e){
                 $("#side-nav").addClass("remove");
             });
+            $(".delete-issue").click(function(){
+               return confirm("Are sure you want to delete your Issue?"); 
+            });
         });
     </script>
 </body>

@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.utils import timezone
 from issue_tracker.models import Issue
 from issue_tracker.forms import IssueForm
@@ -41,3 +41,12 @@ def create_or_edit_issue(request, pk=None):
         form = IssueForm(instance=issue)
     return render(request, "issueform.html", {"form": form})    
     
+
+def delete_issue(request, pk):
+    """
+    author of issue can delete their posted issue
+    """
+    issue = get_object_or_404(Issue, pk=pk)
+    issue.delete()
+    
+    return redirect(get_all_issues)
