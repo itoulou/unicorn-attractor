@@ -1,0 +1,56 @@
+{% extends 'base.html' %} 
+{% block title %}View Issue{% endblock %}
+{% block content %}
+<div class="row">
+    {% if issue.image %}
+    <div class="col-xs-12 col-md-3">
+        <div class=" view-image view-issue-template" style="background: url('{{ MEDIA_URL }}{{ issue.image }}');"></div>
+    </div>
+    {% else %}
+    <div class="col-xs-12 col-md-3 justify-content-center">
+        <div class="view-image view-issue-image" style="background: #eee;"></div>
+    </div>
+    {% endif %}
+    <div class="col-xs-12 col-md-9 text-center">
+        <h3>{{ issue.author }}</h3>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-xs-12">
+        <h1>{{ issue.title }}</h1>
+    </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6 text-center">
+        <p>{{ issue.tag }}</p>
+    </div>
+    <div class="col-xs-6 text-center">
+        <p>{{ issue.published_date }}</p>
+    </div>
+</div>
+<br>
+<div class="row view-issue-votes-content">
+    <div class="col-xs-3 text-center">
+        <button class="glyphicon glyphicon-chevron-up"></button>
+        <h3>{{ issue.votes }}</h3>
+    </div>
+    <div class="col-xs-9 view-issue-content">
+        <pre>{{ issue.content }}</pre>
+    </div>
+</div>
+{% if issue.author == request.user %}
+<div class="row">
+    <div class="col-xs-12">
+        <a href="{% url 'edit_issue' issue.id %}" class="btn btn-default">Edit Issue</a>
+    </div>
+</div>
+<div>
+    <div>
+        <a href="#" class="btn btn-default">Delete Issue</a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

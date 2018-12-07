@@ -17,9 +17,14 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from authentication.views import index
 from authentication import urls as authentication_urls
+from issue_tracker import urls as issue_tracker_urls
+from django.views.static import serve
+from .settings import MEDIA_ROOT
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', index, name="index"),
     url(r'^auth/', include(authentication_urls)),
+    url(r'^issues/', include(issue_tracker_urls)),
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
 ]

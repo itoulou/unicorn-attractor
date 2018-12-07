@@ -1,8 +1,22 @@
-html{
-    margin: 0% 3%;
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden;
 }
 
-#side-nav{
+.container-base {
+    margin: 0;
+}
+
+/*------------------------------------------------------base.html-*/
+
+nav {
+    border-radius: 0;
+}
+
+#side-nav {
     height: 100vh;
     width: 50%;
     background-color: rgba(100, 100, 100, 0.95);
@@ -10,7 +24,178 @@ html{
     z-index: 9999;
 }
 
-.remove{
+.navbar-large h1 {
+    margin-left: 2%;
+}
+
+.navbar-large ul {
+    margin-right: 1%
+}
+
+.remove {
     display: none;
 }
 
+.side-nav-btn-div {
+    top: 15px;
+}
+
+
+/*-------------------------------------------------issues.html(all-issues)*/
+
+.issue {
+    width: 75%;
+    margin-left: 15%;
+    margin-bottom: 5%;
+}
+
+.main-issue-table {
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    border: 1px solid #eee;
+}
+
+
+
+.table {
+    border: 1px solid #eee;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    padding-bottom: 2%;
+    margin-bottom: 0;
+}
+
+.table h3 {
+    text-align: center;
+}
+
+.table-items:last-child .table {
+    border-bottom: none;
+    background: cornsilk;
+}
+
+.votes {
+    height: 100%;
+    border: 1px solid #eee;
+    border-left: none;
+    border-bottom: none;
+    border-top: none;
+    position: absolute;
+    padding-left: 1%;
+}
+
+.votes-chevron {
+    position: absolute;
+    top: 60px;
+}
+
+.content pre {
+    padding-bottom: 10%;
+    margin-bottom: -2%;
+    background: none;
+    border: none;
+}
+
+.comments-row {
+    width: 100%;
+    margin-left: 0%;
+}
+
+.comments {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border: 1px solid #eee;
+    padding-bottom: 2%;
+    margin-bottom: 0;
+}
+
+.view-issue {
+    width: 100%;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+    padding: 2% 0;
+}
+/*-------------------------------------------------------view-issue*/
+.view-image {
+    border-radius: 50%;
+    height: 12rem;
+    width: 12rem;
+    margin-left: 3%;
+}
+
+.view-issue-image {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+ .view-issue-votes-content {
+     height: 400px;
+ }
+ 
+ .view-issue-content {
+     height: 100%;
+ }
+ .view-issue-content pre {
+     height: 100%
+ }
+/*-------------------------------------------------------footer*/
+
+footer {
+    border-top: 1px solid #eee;
+    height: 330px;
+    background-color: #eee;
+    margin-top: 1%;
+    padding-top: 5px;
+    position: relative;
+    bottom: 0;
+    top: 20rem;
+}
+
+.copyright p {
+    display: inline;
+}
+
+/*-------------------------------------------------------------media queries*/
+
+@media (min-width: 768px) {
+    /*base.html-------------------------*/
+    footer {
+        height: 250px;
+        top: 20rem;
+    }
+}
+
+@media (min-width: 992px) {
+    /*base.html-------------------------*/
+    footer {
+        height: 250px;
+        top: 45rem;
+    }
+    
+    .copyright {
+        top: 40px;
+    }
+
+    /*issues page(all-issues)-----------*/
+    .table-items {
+        margin-left: 8.6666666666%;
+    }
+    .table h3 {
+        text-align: left;
+    }
+    /*view-issue-------------------------*/
+    .view-image {
+        height: 20rem;
+        width: 20rem;
+        background-position: center center;
+    }
+}
+@media (min-width: 1025px) {
+    /*base.html-------------------------*/
+    footer {
+        height: 220px;
+        top: 0;
+    }
+}
