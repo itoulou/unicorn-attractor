@@ -1,8 +1,11 @@
-from django.shortcuts import render, reverse, redirect
+from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.contrib import auth, messages
 from authentication.forms import loginForm, registerForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from authentication.models import UserProfile
+from authentication.forms import userProfileForm
+
 
 # Create your views here.
 def index(request):
@@ -52,7 +55,6 @@ def register(request):
         return redirect(reverse('index'))
     if request.method == "POST":
         register_form = registerForm(request.POST)
-        
         if register_form.is_valid():
             register_form.save()
             user_registered = auth.authenticate(username=request.POST['username'],
@@ -65,10 +67,20 @@ def register(request):
                 messages.error(request, 'A problem occured, please try to register again')
     else:    
         register_form = registerForm()
+        # profile_picture_form = profilePictureForm()
     return render(request, 'register.html', {"register_form": register_form})
-    
+
 def profile(request):
     """
     user can access own profile page
     """
+    picture_form = userProfileForm(request.FILES)
+    return render(request, 'profile.html', {"picture_form": picture_form})
+
+def add_or_change_picture(request):
+    """
+    user can alter their profile picture
+    """
+        
     return render(request, 'profile.html')
+    

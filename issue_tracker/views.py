@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.utils import timezone
-from issue_tracker.models import Issue
-from issue_tracker.forms import IssueForm
+from issue_tracker.models import Issue, Comment
+from issue_tracker.forms import IssueForm, CommentForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from authentication.models import UserProfile
+
 
 # Create your views here.
 def get_all_issues(request):
@@ -13,6 +15,7 @@ def get_all_issues(request):
     template
     """ 
     all_issues = Issue.objects.filter(published_date__lte=timezone.now()).order_by("-votes")
+    
     return render(request, "issues.html", {"all_issues": all_issues})
     
 def single_issue(request, pk):
@@ -21,7 +24,38 @@ def single_issue(request, pk):
     and render it to viewissue.html or return 404 error if issue is not found
     """
     issue = get_object_or_404(Issue, pk=pk)
-    return render(request, "viewissue.html", {"issue": issue})
+    comments = Comment.objects.filter(issue=issue).order_by("-id")
+    if request.method == "POST":
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            content = request.POST.get('content')
+            comment = Comment.objects.create(issue=issue,
+                                             user_logged_in=request.user,
+                                             content=content)
+            comment.save()
+            return redirect(single_issue, issue.pk)
+        
+    else:
+        comment_form = CommentForm()
+    
+    if request.method == "POST" and 'votes' in request.POST:
+        issue.votes += 1
+        issue.save()
+        
+    comments_with_images = []
+    for comment in comments:
+        try:
+            image = UserProfile.objects.get(user=comment.user_logged_in).image
+            comments_with_images.append({"image": image, "comment": comment})
+        except:
+            comments_with_images.append({"image": None, "comment": comment})
+    comment_count = comments.count()
+    # import pdb;pdb.set_trace()
+    return render(request, "viewissue.html", {"issue": issue,
+                                              "comments_with_images": comments_with_images,
+                                              "comment_count": comment_count,
+                                              "comment_form": comment_form,
+                                              })
 
 @login_required    
 def create_or_edit_issue(request, pk=None):
@@ -50,3 +84,10 @@ def delete_issue(request, pk):
     issue.delete()
     
     return redirect(get_all_issues)
+
+def votes(request, pk):
+    """
+    User can vote on the issue
+    """
+    
+        

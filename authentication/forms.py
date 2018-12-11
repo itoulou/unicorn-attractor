@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
+from authentication.models import UserProfile
 
 class loginForm(forms.Form):
     """
@@ -20,6 +21,7 @@ class registerForm(UserCreationForm):
     class Meta:
        model = User
        fields = ['email', 'username', 'password1', 'password2']
+    
     
     def clean_email(self):
         """
@@ -45,3 +47,12 @@ class registerForm(UserCreationForm):
         if password1 != password2:
             raise forms.ValidationError('Passwords do not match')
         return password2
+
+class userProfileForm(forms.ModelForm):
+    """
+    Add profile picture form to register form
+    """
+    image = forms.ImageField(label="Profile picture")
+    class Meta:
+        model = UserProfile
+        fields = ['image']

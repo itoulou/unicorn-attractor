@@ -140,9 +140,15 @@ nav {
  .view-issue-content pre {
      height: 100%
  }
+ .votes-chevron-btn {
+    background-color: blue;
+ }
+ .votes-chevron-btn.voted {
+    background-color: green;
+ }
 /*-------------------------------------------------------footer*/
 
-footer {
+.footer {
     border-top: 1px solid #eee;
     height: 330px;
     background-color: #eee;
@@ -161,7 +167,7 @@ footer {
 
 @media (min-width: 768px) {
     /*base.html-------------------------*/
-    footer {
+    .footer {
         height: 250px;
         top: 20rem;
     }
@@ -169,7 +175,7 @@ footer {
 
 @media (min-width: 992px) {
     /*base.html-------------------------*/
-    footer {
+    .footer {
         height: 250px;
         top: 45rem;
     }
@@ -194,7 +200,7 @@ footer {
 }
 @media (min-width: 1025px) {
     /*base.html-------------------------*/
-    footer {
+    .footer {
         height: 220px;
         top: 0;
     }
