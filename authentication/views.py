@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from authentication.models import UserProfile
 from authentication.forms import userProfileForm
+from issue_tracker.models import Issue
+from django.utils import timezone
 
 
 # Create your views here.
@@ -70,17 +72,18 @@ def register(request):
         # profile_picture_form = profilePictureForm()
     return render(request, 'register.html', {"register_form": register_form})
 
-def profile(request):
+def profile(request, pk=None):
     """
-    user can access own profile page
+    user can access own profile page.
+    If user has created issues, the issues will display on his profile page
     """
     picture_form = userProfileForm(request.FILES)
+    all_issues = Issue.objects.filter(published_date__lte=timezone.now()).order_by("-published_date")
+    if all_issues:
+        return render(request, "profile.html", {"all_issues": all_issues,
+                                                "picture_form": picture_form,
+                                                })
+    else:
+        picture_form = userProfileForm(request.FILES)
     return render(request, 'profile.html', {"picture_form": picture_form})
 
-def add_or_change_picture(request):
-    """
-    user can alter their profile picture
-    """
-        
-    return render(request, 'profile.html')
-    

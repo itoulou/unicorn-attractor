@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     margin: 0px;
@@ -40,6 +41,12 @@ nav {
     top: 15px;
 }
 
+.nav-user {
+    padding-right: 5px;
+    margin-right: 5px;
+    border-right: 1px solid #858585;
+}
+
 
 /*-------------------------------------------------issues.html(all-issues)*/
 
@@ -73,6 +80,10 @@ nav {
 .table-items:last-child .table {
     border-bottom: none;
     background: cornsilk;
+}
+
+.issue-done-icon {
+    top: 30px;
 }
 
 .votes {
@@ -116,36 +127,62 @@ nav {
     border-top-left-radius: 0px;
     padding: 2% 0;
 }
+
 /*-------------------------------------------------------view-issue*/
-.view-image {
+
+.author-image-row {
+    text-align: center
+}
+
+.author-image {
     border-radius: 50%;
     height: 12rem;
     width: 12rem;
-    margin-left: 3%;
+    text-align-last: center;
 }
 
 .view-issue-image {
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+    border-radius: 50%;
+    height: 12rem;
+    width: 12rem;
 }
 
- .view-issue-votes-content {
-     height: 400px;
- }
- 
- .view-issue-content {
-     height: 100%;
- }
- .view-issue-content pre {
-     height: 100%
- }
- .votes-chevron-btn {
-    background-color: blue;
- }
- .votes-chevron-btn.voted {
-    background-color: green;
- }
+.view-issue-author{
+    position: relative;
+    top: 45px;
+}
+
+.done-btn {
+    position: relative;
+    right: 20px;
+}
+
+.view-issue-done-icon{
+    position: relative;
+    right: 20px;
+}
+
+.issue-done {
+    display: none;
+}
+
+.view-issue-votes-content {
+    height: 400px;
+}
+
+.view-issue-content {
+    height: 100%;
+}
+
+.view-issue-content pre {
+    height: 100%
+}
+
+.vote-btn.voted {
+    background-color: black;
+    color: white;
+}
+
 /*-------------------------------------------------------footer*/
 
 .footer {
@@ -179,7 +216,7 @@ nav {
         height: 250px;
         top: 45rem;
     }
-    
+
     .copyright {
         top: 40px;
     }
@@ -192,12 +229,16 @@ nav {
         text-align: left;
     }
     /*view-issue-------------------------*/
-    .view-image {
+    .author-image-row {
+        text-align: left;
+    }
+
+    .author-image {
         height: 20rem;
         width: 20rem;
-        background-position: center center;
     }
 }
+
 @media (min-width: 1025px) {
     /*base.html-------------------------*/
     .footer {

@@ -1,21 +1,104 @@
 {% extends 'base.html' %} 
 {% load bootstrap_tags %}
 {% block title %}View Issue{% endblock %}
+{% block jquery %}
+<script>
+$(document).ready(function(){
+    $(".delete-issue").click(function(){
+       return confirm("Are sure you want to delete your Issue?"); 
+    });
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').focus();
+    });
+    $('.done-btn').click(function(e){
+        e.preventDefault()
+        var this_ = $(this)
+        this_.toggleClass("glyphicon glyphicon-ok");
+        this_.text(function(i, text) {
+           return text === 'Done' ? '' : 'Done';
+        });
+        var done_url = "{% url 'done' issue.id %}";
+        var buttonHasIcon = this_.hasClass("glyphicon glyphicon-ok");
+        if (buttonHasIcon){
+            $.post(done_url, {"is_done": true}, function(data){
+            });
+            
+        } else {
+            $.post(done_url, {"is_done": false}, function(data){
+            });
+        }   
+    });
+    function updateVotes(tag, votes){
+        tag.text(votes);
+    }
+    $(".vote-btn").click(function(e){
+        e.preventDefault();
+        $(this).toggleClass("voted");
+        var vote_url = "{% url 'vote' issue.id %}";
+        var vote = parseInt($(".vote-count").attr("data-votes"), 10);
+        var previousVote = vote - 1;
+        var voteClicked = $(this).hasClass("voted");
+        $.ajax({
+            url: vote_url,
+            method: "GET",
+            data: {},
+            dataType: 'json',
+            success: function(data){
+                console.log(data);
+                
+              if (voteClicked){
+                  console.log(data.up_vote);
+                  vote ++;
+                  console.log("newVote " + vote);
+                  updateVotes($(".vote-count"), vote);
+              } else {
+                  console.log(data.up_vote);
+                  console.log("original vote " + vote);
+                  updateVotes($(".vote-count"), vote);
+              }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
 {% block content %}
 <div class="row">
-    {% if issue.image %}
-    <div class="col-xs-12 col-md-3">
-        <div class=" view-image view-issue-template" style="background: url('{{ MEDIA_URL }}{{ issue.image }}');"></div>
+    {% for author_image in author_image %}
+    {% if author_image.image.url != None %}
+    <div class="col-xs-12 col-md-3 author-image-row">
+        <img  class="author-image" src="{{ author_image.image.url }}" alt="" height="500px" width="500px">
     </div>
     {% else %}
-    <div class="col-xs-12 col-md-3 justify-content-center">
-        <div class="view-image view-issue-image" style="background: #eee;"></div>
+    <div class="col-xs-12 col-md-3 author-image-row">
+        <img class="author-image view-image view-issue-image" style="background: #eee;">
     </div>
     {% endif %}
-    <div class="col-xs-12 col-md-9 text-center">
+    {% endfor %}
+    <div class="col-xs-12 col-md-9 text-center view-issue-author">
         <h3>{{ issue.author }}</h3>
     </div>
-</div>
+    {% if issue.author == request.user %}
+    <div class="text-right">
+        <form action="" method="POST">
+        {% csrf_token %}
+        {% if issue.done == False %}
+        <button class="btn btn-default done-btn">Done</button>
+        {% else %}
+        <button class="btn btn-default done-btn glyphicon glyphicon-ok"></button>
+        {% endif %}
+        </form>
+    </div>
+    {% elif issue.done %}
+    <div class="text-right">
+        <i class="glyphicon glyphicon-ok view-issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this issue says the issue has been fixed"></i>
+    </div>    
+    {% else %}
+    <div class="text-right">
+        <i class="glyphicon glyphicon-time view-issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="Unicorn is currently working on this issue"></i>
+    </div> 
+    {% endif %}
+</div
 <br>
 <div class="row">
     <div class="col-xs-12">
@@ -34,11 +117,15 @@
 <br>
 <div class="row view-issue-votes-content">
     <div class="col-xs-3 text-center">
-        <form method="POST">
+        <form action="{% url 'vote' issue.id %}" method="POST">
         {% csrf_token %}
-        <button class="glyphicon glyphicon-chevron-up votes-chevron-btn" name="votes"></button>
-        <h3>{{ issue.votes }}</h3>
+        {% if user in issue.vote.all %}
+        <button class="glyphicon glyphicon-chevron-up vote-btn voted" name="vote-up"></button>
+        {% else %}
+        <button class="glyphicon glyphicon-chevron-up vote-btn" name="vote-up"></button>
+        {% endif %}
         </form>
+        <h3 class="vote-count" data-votes="{{ issue.vote.count }}">{{ issue.vote.count }}</h3>
     </div>
     <div class="col-xs-9 view-issue-content">
         <pre>{{ issue.content }}</pre>

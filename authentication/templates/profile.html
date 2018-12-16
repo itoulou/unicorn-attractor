@@ -35,6 +35,52 @@
     </div>
   </div>
 </div>
-
-
+<div class="row">
+  <div class="col-xs-12 col-md-6 text-center">
+    <a href="#">My issues</a>
+  </div>
+  <div class="col-xs-12 col-md-6 text-center">
+    <a href="#">My requests</a>
+  </div>
+</div>
+{% for issue in all_issues %}
+{% if issue.author == request.user  %}
+<div class="row issue">
+    <div class="col-xs-12 main-issue-table">
+        <div class="col-xs-12 col-md-1 text-center votes hidden-xs hidden-sm">
+            <div class="votes-chevron">
+                <h3>{{ issue.vote.count }}</h3>
+            </div>
+        </div>
+        <div class="row table-items">
+            <div class="col-xs-12 col-md-11 text-left table">
+                 <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title | truncatewords:10 }}</a></h3>
+            </div>
+        </div>
+        <div class="row table-items">
+            <div class="col-xs-12 col-md-11 table content">
+                <pre>{{ issue.content | truncatewords:30 }}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="row comments-row hidden-xs hidden-sm">
+        <div class="col-xs-12 comments">
+            <h5>Comments -</h5>
+            {% if issue.comments != None %}
+            {{ issue.comments }}
+            {% else %}
+            <a href="#">New Comment</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row hidden-md hidden-lg">
+        <div class="col-xs-12">
+            <div class="text-center">
+                <a href="{% url 'view_issue' issue.id %}" class="btn btn-default view-issue">View Issue</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
 {% endblock %}

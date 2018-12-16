@@ -13,6 +13,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="{% static 'js/base.js' %}"></script>
+    {% block jquery %}{% endblock %}
 </head>
 
 <body>
@@ -44,11 +45,11 @@
                     <li><a href="#">Requests</a></li>
                     <li role="presentation" class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                            <span class="caret"></span>
+                         <span class="nav-user">{{ user.username.title }}</span><span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="{% url 'index' %}">Home</a></li>
-                            <li><a href="{% url 'profile' %}">{{ user.username.title }}</a></li>
+                            <li><a href="{% url 'profile' %}">Profile</a></li>
                             <li><a href="#">About</a></li>
                             <li><a href="#">Contact</a></li>
                             <hr>
