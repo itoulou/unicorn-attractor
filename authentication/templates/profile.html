@@ -44,7 +44,6 @@
   </div>
 </div>
 {% for issue in all_issues %}
-{% if issue.author == request.user  %}
 <div class="row issue">
     <div class="col-xs-12 main-issue-table">
         <div class="col-xs-12 col-md-1 text-center votes hidden-xs hidden-sm">
@@ -81,6 +80,22 @@
         </div>
     </div>
 </div>
-{% endif %}
 {% endfor %}
+<div class="row">
+    <div class="col-xs-12 text-center">
+        <div class="pagination">
+            <span class="step-links">
+                {% if all_issues.has_previous %}
+                    <a href="?page={{ all_issues.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="current">
+                    Page {{ all_issues.number }} of {{ all_issues.paginator.num_pages }}.
+                </span>
+                {% if all_issues.has_next %}
+                    <a href="?page={{ all_issues.next_page_number }}">next</a>
+                {% endif %}    
+            </span>
+        </div>
+    </div>
+</div>
 {% endblock %}

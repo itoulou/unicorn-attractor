@@ -26,12 +26,12 @@
                     {% endif %}
                 </div>
                 <div class="col-xs-6">
-                    <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title | truncatewords:10 }}</a></h3>
+                    <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title.capitalize | truncatewords:10 }}</a></h3>
                 </div>
             </div>
             <div class="col-xs-12 col-md-11 text-left table hidden-xs hidden-sm">
                 <div class="col-xs-6">
-                    <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title | truncatewords:10 }}</a></h3>
+                    <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title.capitalize | truncatewords:10 }}</a></h3>
                 </div>
                 <div class="col-xs-6 text-right">
                     {% if issue.done %}
@@ -51,7 +51,7 @@
     <div class="row comments-row hidden-xs hidden-sm">
         <div class="col-xs-12 comments">
             <h5>Comments -</h5>
-            {% if issue.comments != None %}
+            {% if comments %}
             {{ issue.comments }}
             {% else %}
             <a href="#">New Comment</a>

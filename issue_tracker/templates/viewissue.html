@@ -163,11 +163,48 @@ $(document).ready(function(){
     </div>
   </div>
 </div>
-{% for comment in comments_with_images %}
+{{ comment_count }} comment{{ comments_with_images | pluralize }}
+<!-- Button trigger modal -->
+<a href="" data-toggle="modal" data-target="#myModalComments">View all comments</a>
+
+<!-- Modal -->
+<div class="modal fade" id="myModalComments" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">All comments</h4>
+      </div>
+      <div class="modal-body">
+        {% for comment in comments_with_images %}
+        <div class="row">
+            <p class="comment-date-modal hidden-xs">{{ comment.comment.created_date }}</p>
+            <div class="comment-image-div">
+                {% if comment.image.url != None %}
+                <img class="comment-image" src="{{ comment.image.url }}" alt="" style="width: 5rem; height: 5rem; border-radius: 50%;">
+                {% else %}
+                <div style="background-color: #eee; width: 5rem; height: 5rem; border-radius: 50%;"></div>
+                {% endif %}
+            </div>
+            <blockquote>
+                <p>{{ comment.comment.content }}</p>
+                <footer>by <cite title="Source Title">{{ comment.comment.user_logged_in }}</cite></footer>
+                <p class="comment-date hidden-sm hidden-md hidden-lg">{{ comment.comment.created_date }}</p>
+            </blockquote>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% for comment in first_three_comments %}
 <div class="row">
-    <div>
+    <div class="comment-image-div">
         {% if comment.image.url != None %}
-        <img src="{{ comment.image.url }}" alt="" style="width: 5rem; height: 5rem; border-radius: 50%;">
+        <img class="comment-image" src="{{ comment.image.url }}" alt="" style="width: 5rem; height: 5rem; border-radius: 50%;">
         {% else %}
         <div style="background-color: #eee; width: 5rem; height: 5rem; border-radius: 50%;"></div>
         {% endif %}
@@ -175,6 +212,7 @@ $(document).ready(function(){
     <blockquote>
         <p>{{ comment.comment.content }}</p>
         <footer>by <cite title="Source Title">{{ comment.comment.user_logged_in }}</cite></footer>
+        <p class="comment-date">{{ comment.comment.created_date }}</p>
     </blockquote>
 </div>
 {% endfor %}

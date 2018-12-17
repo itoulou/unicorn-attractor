@@ -12,7 +12,7 @@ class Issue(models.Model):
     """
     author = models.ForeignKey('auth.User', null=True, blank=False)
     title = models.CharField(max_length=400)
-    content = models.TextField(max_length=800)
+    content = models.TextField(max_length=2000)
     created_date = models.DateTimeField(auto_now_add=True)
     published_date = models.DateTimeField(blank=True, null=True, default=timezone.now())
     total_votes = models.IntegerField(default=0)
@@ -30,6 +30,7 @@ class Comment(models.Model):
     image = models.ImageField(null=True, blank=True)
     content = models.TextField(max_length=100, null=True, blank=False)
     created_date = models.DateTimeField(auto_now_add=True)
+    published_date = models.DateTimeField(blank=True, null=True, default=timezone.now())
     tag = models.CharField(max_length=30, blank=True, null=True)
 
     def __unicode__(self):

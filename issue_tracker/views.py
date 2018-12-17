@@ -57,8 +57,6 @@ def single_issue(request, pk):
     except:
         author_image.append({"image": None})
     
-    # import pdb;pdb.set_trace()
-        
     comments_with_images = []
     for comment in comments:
         try:
@@ -67,13 +65,13 @@ def single_issue(request, pk):
         except:
             comments_with_images.append({"image": None, "comment": comment})
     comment_count = comments.count()
-    # print(comment_count)
-    # import pdb;pdb.set_trace()
+    first_three_comments = comments_with_images[:3]
     return render(request, "viewissue.html", {"author_image": author_image,
                                               "issue": issue,
                                               "comments_with_images": comments_with_images,
                                               "comment_count": comment_count,
                                               "comment_form": comment_form,
+                                              "first_three_comments": first_three_comments,
                                               })
 
 def create_or_edit_issue(request, pk=None):
@@ -103,6 +101,9 @@ def delete_issue(request, pk):
     return redirect(get_all_issues)
     
 def vote(request, pk):
+    """
+    User in session can vote for an issue if it's helped them
+    """
     issue = get_object_or_404(Issue, pk=pk)
     user = request.user
     up_vote = True
@@ -122,6 +123,10 @@ def vote(request, pk):
 
 @csrf_exempt
 def done(request, pk):
+    """
+    Author of issue can click button if 'admin' has fixed the issue in 
+    their opinon
+    """
     issue = get_object_or_404(Issue, pk=pk)
     data = {
         "is_done": issue.done

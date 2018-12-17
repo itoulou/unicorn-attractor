@@ -7,6 +7,7 @@ from authentication.models import UserProfile
 from authentication.forms import userProfileForm
 from issue_tracker.models import Issue
 from django.utils import timezone
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # Create your views here.
@@ -75,11 +76,20 @@ def register(request):
 def profile(request, pk=None):
     """
     user can access own profile page.
-    If user has created issues, the issues will display on his profile page
+    If user has created issues, the issues will display on their profile page
     """
     picture_form = userProfileForm(request.FILES)
-    all_issues = Issue.objects.filter(published_date__lte=timezone.now()).order_by("-published_date")
+    all_issues = Issue.objects.filter(author=request.user).order_by("-published_date")
     if all_issues:
+        paginator = Paginator(all_issues, 2)
+        page = request.GET.get('page')
+        try:
+            all_issues = paginator.page(page)
+        except PageNotAnInteger:
+            all_issues = paginator.page(1)
+        except EmptyPage:
+            all_issues = paginator.page(paginator.num_pages)
+        paginator.page(paginator.num_pages)  
         return render(request, "profile.html", {"all_issues": all_issues,
                                                 "picture_form": picture_form,
                                                 })
