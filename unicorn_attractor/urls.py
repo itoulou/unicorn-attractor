@@ -18,6 +18,8 @@ from django.contrib import admin
 from authentication.views import index
 from authentication import urls as authentication_urls
 from issue_tracker import urls as issue_tracker_urls
+from feature_requests import urls as feature_request_urls
+from search import urls as search_urls
 from django.views.static import serve
 from .settings import MEDIA_ROOT
 from django.conf import settings
@@ -28,5 +30,7 @@ urlpatterns = [
     url(r'^$', index, name="index"),
     url(r'^auth/', include(authentication_urls)),
     url(r'^issues/', include(issue_tracker_urls)),
+    url(r'^feature-requests/', include(feature_request_urls)),
+    url(r'^search/', include(search_urls)),
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

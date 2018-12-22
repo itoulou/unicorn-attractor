@@ -46,7 +46,24 @@ nav {
     margin-right: 5px;
     border-right: 1px solid #858585;
 }
+/*-----------------------------------------------------------profile.html*/
+.add-profile-picture{
+    position: relative;
+    bottom: 160px;
+    left: 0px;
+}
 
+.remove-issues{
+    display: none;
+}
+
+.profile-issues-features {
+    background-color: rgba(100, 100, 100, 0.95);
+    height: 100vh;
+    position: absolute;
+    width: 100%;
+    z-index: 9999;
+}
 
 /*-------------------------------------------------issues.html(all-issues)*/
 
@@ -93,7 +110,7 @@ nav {
     border-bottom: none;
     border-top: none;
     position: absolute;
-    padding-left: 1%;
+    padding-left: 1.5%;
 }
 
 .votes-chevron {
@@ -101,8 +118,12 @@ nav {
     top: 60px;
 }
 
+.content {
+    overflow: auto;
+    height: 150px;
+}
+
 .content pre {
-    padding-bottom: 10%;
     margin-bottom: -2%;
     background: none;
     border: none;
@@ -114,19 +135,36 @@ nav {
     margin-left: 0%;
 }
 
-.comments {
+.comment-number-div {
     border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
     border: 1px solid #eee;
     padding-bottom: 2%;
     margin-bottom: 0;
+    border-right: none;
 }
 
 .view-issue {
     width: 100%;
     border-top-right-radius: 0px;
     border-top-left-radius: 0px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
     padding: 2% 0;
+}
+
+.view-issue-btn-div {
+    border-bottom-right-radius: 10px;
+    border: 1px solid #eee;
+    padding-bottom: 2%;
+    margin-bottom: 0;
+    border-left: none;
+}
+
+.view-issue-btn {
+    padding-top: 7px;
+    position: relative;
+    top: 5px;
+    left: 9.5px;
 }
 
 /*-------------------------------------------------------view-issue*/
@@ -148,7 +186,7 @@ nav {
     width: 12rem;
 }
 
-.view-issue-author{
+.view-issue-author {
     position: relative;
     top: 45px;
 }
@@ -158,7 +196,7 @@ nav {
     right: 20px;
 }
 
-.view-issue-done-icon{
+.view-issue-done-icon {
     position: relative;
     right: 20px;
 }
@@ -184,36 +222,43 @@ nav {
     background-color: black;
     color: white;
 }
-.modal-dialog{
+
+.modal-dialog {
     overflow-y: initial;
 }
-.modal-body{
+
+.modal-body-all-comments {
     height: 500px;
     overflow-y: auto;
 }
 
-.comment-image-div{
+.modal-body {}
+
+.comment-image-div {
     display: inline-block;
     margin-left: 3%;
 }
 
-.comment-image{
+.comment-image {
     vertical-align: text-bottom;
 }
 
 blockquote {
     display: inline-block;
 }
-.comment-date{
+
+.comment-date {
     font-size: 10px;
 }
-.comment-date-modal{
+
+.comment-date-modal {
     text-align: right;
     position: relative;
     top: 40px;
     font-size: 10px;
     margin-right: 2%;
 }
+
 /*-------------------------------------------------------footer*/
 
 .footer {
@@ -251,13 +296,33 @@ blockquote {
     .copyright {
         top: 40px;
     }
+    /*profile.html-------------------------*/
+    .add-profile-picture{
+        left: 30px;
+    }
 
     /*issues page(all-issues)-----------*/
+    .main-issue-table {
+        width: 66.666%;
+        margin-left: 15%;
+    }
     .table-items {
         margin-left: 8.6666666666%;
     }
     .table h3 {
         text-align: left;
+    }
+    .content {
+        overflow: auto;
+        height: 105px;
+    }
+    .comments-row {
+        width: 100%;
+        margin-left: 0%;
+    }
+    .comments-row {
+        width: 66.666%;
+        margin-left: 15%;
     }
     /*view-issue-------------------------*/
     .author-image-row {
@@ -275,5 +340,11 @@ blockquote {
     .footer {
         height: 220px;
         top: 0;
+    }
+    /*profile.html-------------------------*/
+    .add-profile-picture{
+        left: 90px;
+        top: 140px;
+        position: absolute;
     }
 }

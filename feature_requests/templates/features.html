@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}Issues{% endblock %}
+{% block title %}Features{% endblock %}
 {% block content %}
 {% if user.is_authenticated %}
 <div class="row">
     <div class="col-md-6 text-left display">
-        <form action="{% url 'search-issues' %}" method="GET">
-            <input type="text" name="issue-search">
+        <form action="{% url 'search-features' %}" method="GET">
+            <input type="text" name="feature-search">
             <button class="btn btn-default" type="submit">Search</button>
         </form>
     </div>
     <div class="col-md-6 text-right">
-        <a href="{% url 'create_issue' %}" class="btn btn-default">Create Ticket</a>
+        <a href="{% url 'create_feature' %}" class="btn btn-default">Create Request</a>
     </div>
 </div>
 {% if messages %}
@@ -23,62 +23,62 @@
     {% endfor %}
 {% endif %}
 {% endif %}
-{% for issue in all_issues %}
+{% for feature in all_features %}
 <div class="row issue">
     <div class="col-xs-12 col-md-offset-3 col-md-6 main-issue-table">
         <div class="col-xs-12 col-md-1 text-center votes hidden-xs hidden-sm">
             <div class="votes-chevron">
-                <h3>{{ issue.vote.count }}</h3>
+                <h3>{{ feature.vote.count }}</h3>
             </div>
         </div>
         <div class="row table-items">
             <div class="col-xs-12 col-md-11 text-left table hidden-md hidden-lg">
                 <div class="col-xs-3">
-                    {% if issue.done %}
+                    {% if feature.done %}
                     <i class="glyphicon glyphicon-ok issue-done-icon"></i>
                     {% else %}
                     <i class="glyphicon glyphicon-time issue-done-icon"></i>
                     {% endif %}
                 </div>
                 <div class="col-xs-6">
-                    <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title.capitalize | truncatewords:10 }}</a></h3>
+                    <h3><a href="{% url 'view_feature' feature.id %}">{{ feature.title.capitalize | truncatewords:10 }}</a></h3>
                 </div>
             </div>
             <div class="col-xs-12 col-md-11 text-left table hidden-xs hidden-sm">
                 <div class="col-xs-6">
-                    <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title.capitalize | truncatewords:10 }}</a></h3>
+                    <h3><a href="{% url 'view_feature' feature.id %}">{{ feature.title.capitalize | truncatewords:10 }}</a></h3>
                 </div>
                 <div class="col-xs-6 text-right">
-                    {% if issue.done %}
-                    <i class="glyphicon glyphicon-ok issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this issue says the issue has been fixed"></i>
+                    {% if feature.done %}
+                    <i class="glyphicon glyphicon-ok issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this feature says the feature has been fixed"></i>
                     {% else %}
-                    <i class="glyphicon glyphicon-time issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="Unicorn is currently working on this issue"></i>
+                    <i class="glyphicon glyphicon-time issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="Unicorn is currently working on this feature"></i>
                     {% endif %}
                 </div>
             </div>
         </div>
         <div class="row table-items">
             <div class="col-xs-12 col-md-11 table content">
-                <pre>{{ issue.content | truncatewords:100 }}</pre>
+                <pre>{{ feature.content | truncatewords:100 }}</pre>
             </div>
         </div>
     </div>
     <div class="row comments-row hidden-xs hidden-sm">
         <div class="col-md-6 comment-number-div">
-            {% if issue.comment_number > 0 %}
-            <h5>{{ issue.comment_number }} comment{{ issue.comment_number | pluralize }}</h5>
+            {% if feature.comment_number > 0 %}
+            <h5>{{ feature.comment_number }} comment{{ feature.comment_number | pluralize }}</h5>
             {% else %}
-            <h5><a href="{% url 'view_issue' issue.id %}">Be the first to comment</a></h5>
+            <h5><a href="{% url 'view_feature' feature.id %}">Be the first to comment</a></h5>
             {% endif %}
         </div>
         <div class="col-md-6 text-right view-issue-btn-div">
-            <a href="{% url 'view_issue' issue.id %}" class="btn btn-default view-issue-btn">View issue</a>
+            <a href="{% url 'view_feature' feature.id %}" class="btn btn-default view-issue-btn">View feature</a>
         </div>
     </div>
     <div class="row hidden-md hidden-lg">
         <div class="col-xs-12">
             <div class="text-center">
-                <a href="{% url 'view_issue' issue.id %}" class="btn btn-default view-issue">View Issue</a>
+                <a href="{% url 'view_feature' feature.id %}" class="btn btn-default view-issue">View feature</a>
             </div>
         </div>
     </div>
@@ -88,14 +88,14 @@
     <div class="col-xs-12 text-center">
         <div class="pagination">
             <span class="step-links">
-                {% if all_issues.has_previous %}
-                    <a href="?page-issues={{ all_issues.previous_page_number }}">previous</a>
+                {% if all_features.has_previous %}
+                    <a href="?page-features={{ all_features.previous_page_number }}">previous</a>
                 {% endif %}
                 <span class="current">
-                    Page {{ all_issues.number }} of {{ all_issues.paginator.num_pages }}.
+                    Page {{ all_features.number }} of {{ all_features.paginator.num_pages }}.
                 </span>
-                {% if all_issues.has_next %}
-                    <a href="?page-issues={{ all_issues.next_page_number }}">next</a>
+                {% if all_features.has_next %}
+                    <a href="?page-features={{ all_features.next_page_number }}">next</a>
                 {% endif %}    
             </span>
         </div>

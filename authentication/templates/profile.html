@@ -1,19 +1,249 @@
 {% extends 'base.html' %}
 {% load bootstrap_tags %}
 {% block title %}{{ user.username.title }}'s Page{% endblock %}
+{% block jquery %}
+<script>
+$(document).ready(function(){
+    $(".my-issues-list").click(function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        $("#my-issues-list").removeClass("remove-issues");
+    });
+    $("#my-issues-list").click(function(e){
+        e.stopPropagation(); 
+    });
+    $('body, html').click(function(e){
+        $("#my-issues-list").addClass("remove-issues");
+    });
+    $(".my-features-list").click(function(e){
+        e.stopPropagation();
+        $("#my-features-list").removeClass("remove-issues");
+    });
+    $("#my-features-list").click(function(e){
+        e.stopPropagation(); 
+    });
+    $('body, html').click(function(e){
+        $("#my-features-list").addClass("remove-issues");
+    });
+    $(".next-page").click(function(event){
+        // event.preventDefault();
+        // var nextUrl = $(this).attr("href");
+        // var page = nextUrl.split("?page-issues=")[1];
+        // $.post(nextUrl, {"page-issues": page}, function(data){
+        // });
+    });
+});
+
+</script>
+{% endblock %}
 {% block content %}
 <h1>{{ user.username.title }}'s Profile</h1>
 <p>{{ user.userprofile }}</p>
-{% if user.userprofile.image %}
-<img src="{{ user.userprofile.image.url }}" alt="" style="width: 400px; height:400px;"> 
-<a href="" type="button" data-toggle="modal" data-target="#myModal">Change profile picture<a>
-{% else %}
-<a href="" type="button" data-toggle="modal" data-target="#myModal">
-    <div style="background-color: #eee; width:400px; height:400px;">
-        <p>Add a profile picture?</p>
+<!---------------------------------------------------------------------------issues---------------------------------->
+<div id="my-issues-list" class="remove-issues profile-issues-features">
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h3>My issues</h3>
+        </div>
     </div>
-</a>
-{% endif %}
+    {% if all_issues %}
+    {% for issue in all_issues %}
+    <div class="row issue">
+        <div class="col-xs-12 col-md-offset-3 col-md-6 main-issue-table">
+            <div class="col-xs-12 col-md-1 text-center votes hidden-xs hidden-sm">
+                <div class="votes-chevron">
+                    <h3>{{ issue.vote.count }}</h3>
+                </div>
+            </div>
+            <div class="row table-items">
+                <div class="col-xs-12 col-md-11 text-left table hidden-md hidden-lg">
+                    <div class="col-xs-3">
+                        {% if issue.done %}
+                        <i class="glyphicon glyphicon-ok issue-done-icon"></i>
+                        {% else %}
+                        <i class="glyphicon glyphicon-time issue-done-icon"></i>
+                        {% endif %}
+                    </div>
+                    <div class="col-xs-6">
+                        <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title.capitalize | truncatewords:10 }}</a></h3>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-11 text-left table hidden-xs hidden-sm">
+                    <div class="col-xs-6">
+                        <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title.capitalize | truncatewords:10 }}</a></h3>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        {% if issue.done %}
+                        <i class="glyphicon glyphicon-ok issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this issue says the issue has been fixed"></i>
+                        {% else %}
+                        <i class="glyphicon glyphicon-time issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="Unicorn is currently working on this issue"></i>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row table-items">
+                <div class="col-xs-12 col-md-11 table content">
+                    <pre>{{ issue.content | truncatewords:100 }}</pre>
+                </div>
+            </div>
+        </div>
+        <div class="row comments-row hidden-xs hidden-sm">
+            <div class="col-md-6 comment-number-div">
+                {% if issue.comment_number > 0 %}
+                <h5>{{ issue.comment_number }} comment{{ issue.comment_number | pluralize }}</h5>
+                {% else %}
+                <h5><a href="{% url 'view_issue' issue.id %}">Be the first to comment</a></h5>
+                {% endif %}
+            </div>
+            <div class="col-md-6 text-right view-issue-btn-div">
+                <a href="{% url 'view_issue' issue.id %}" class="btn btn-default view-issue-btn">View issue</a>
+            </div>
+        </div>
+        <div class="row hidden-md hidden-lg">
+            <div class="col-xs-12">
+                <div class="text-center">
+                    <a href="{% url 'view_issue' issue.id %}" class="btn btn-default view-issue">View Issue</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h3>You haven't posted any issues.</h3>
+            <a href="{% url 'create_issue' %}">post an issue</a>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if all_issues.has_previous %}
+                        <a href="?page-issues={{ all_issues.previous_page_number }}" class="previous-page">previous</a>
+                    {% endif %}
+                    <span class="current">
+                        Page {{ all_issues.number }} of {{ all_issues.paginator.num_pages }}.
+                    </span>
+                    {% if all_issues.has_next %}
+                        <a href="?page-issues={{ all_issues.next_page_number }}" class="next-page">next</a>
+                    {% endif %}    
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------------------------------------------------------------------------features------------------------->
+
+<div id="my-features-list" class="remove-issues profile-issues-features">
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h3>My feature requests/h3>
+        </div>
+    </div>
+    {% if all_features %}
+    {% for feature in all_features %}
+    <div class="row issue">
+        <div class="col-xs-12 col-md-offset-3 col-md-6 main-issue-table">
+            <div class="col-xs-12 col-md-1 text-center votes hidden-xs hidden-sm">
+                <div class="votes-chevron">
+                    <h3>{{ feature.vote.count }}</h3>
+                </div>
+            </div>
+            <div class="row table-items">
+                <div class="col-xs-12 col-md-11 text-left table hidden-md hidden-lg">
+                    <div class="col-xs-3">
+                        {% if feature.done %}
+                        <i class="glyphicon glyphicon-ok issue-done-icon"></i>
+                        {% else %}
+                        <i class="glyphicon glyphicon-time issue-done-icon"></i>
+                        {% endif %}
+                    </div>
+                    <div class="col-xs-6">
+                        <h3><a href="{% url 'view_feature' feature.id %}">{{ feature.title.capitalize | truncatewords:10 }}</a></h3>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-11 text-left table hidden-xs hidden-sm">
+                    <div class="col-xs-6">
+                        <h3><a href="{% url 'view_feature' feature.id %}">{{ feature.title.capitalize | truncatewords:10 }}</a></h3>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        {% if feature.done %}
+                        <i class="glyphicon glyphicon-ok issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this feature says the feature has been fixed"></i>
+                        {% else %}
+                        <i class="glyphicon glyphicon-time issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="Unicorn is currently working on this feature"></i>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row table-items">
+                <div class="col-xs-12 col-md-11 table content">
+                    <pre>{{ feature.content | truncatewords:100 }}</pre>
+                </div>
+            </div>
+        </div>
+        <div class="row comments-row hidden-xs hidden-sm">
+            <div class="col-md-6 comment-number-div">
+                {% if feature.comment_number > 0 %}
+                <h5>{{ feature.comment_number }} comment{{ feature.comment_number | pluralize }}</h5>
+                {% else %}
+                <h5><a href="{% url 'view_feature' feature.id %}">Be the first to comment</a></h5>
+                {% endif %}
+            </div>
+            <div class="col-md-6 text-right view-issue-btn-div">
+                <a href="{% url 'view_feature' feature.id %}" class="btn btn-default view-issue-btn">View feature</a>
+            </div>
+        </div>
+        <div class="row hidden-md hidden-lg">
+            <div class="col-xs-12">
+                <div class="text-center">
+                    <a href="{% url 'view_feature' feature.id %}" class="btn btn-default view-issue">View feature</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h3>You haven't made any feature requests.</h3>
+            <a href="{% url 'create_feature' %}">make a request</a>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if all_features.has_previous %}
+                        <a href="?page-features={{ all_features.previous_page_number }}" class="previous-page">previous</a>
+                    {% endif %}
+                    <span class="current">
+                        Page {{ all_features.number }} of {{ all_features.paginator.num_pages }}.
+                    </span>
+                    {% if all_features.has_next %}
+                        <a href="?page-features={{ all_features.next_page_number }}" class="next-page">next</a>
+                    {% endif %}    
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------------------------------------------------------------------------------------------------->
+<div class="row">
+    <div class="col-xs-12 col-md-3 text-center">
+        {% if user.userprofile.image %}
+        <img src="{{ user.userprofile.image.url }}" alt="" style="width: 300px; height:300px; border-radius: 50%;"> 
+        <a href="" type="button" data-toggle="modal" data-target="#myModal">Change profile picture<a>
+        {% else %}
+        <a href="" type="button" data-toggle="modal" data-target="#myModal">
+            <img style="background-color: #eee; width:300px; height:300px; border-radius: 50%;" >
+            <p class="add-profile-picture">Add a profile picture?</p>
+        </a>
+        {% endif %}
+    </div>
+</div>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
@@ -37,65 +267,10 @@
 </div>
 <div class="row">
   <div class="col-xs-12 col-md-6 text-center">
-    <a href="#">My issues</a>
+    <a href="#" class="my-issues-list">My issues</a>
   </div>
   <div class="col-xs-12 col-md-6 text-center">
-    <a href="#">My requests</a>
+    <a href="#" class="my-features-list">My requests</a>
   </div>
-</div>
-{% for issue in all_issues %}
-<div class="row issue">
-    <div class="col-xs-12 main-issue-table">
-        <div class="col-xs-12 col-md-1 text-center votes hidden-xs hidden-sm">
-            <div class="votes-chevron">
-                <h3>{{ issue.vote.count }}</h3>
-            </div>
-        </div>
-        <div class="row table-items">
-            <div class="col-xs-12 col-md-11 text-left table">
-                 <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title | truncatewords:10 }}</a></h3>
-            </div>
-        </div>
-        <div class="row table-items">
-            <div class="col-xs-12 col-md-11 table content">
-                <pre>{{ issue.content | truncatewords:30 }}</pre>
-            </div>
-        </div>
-    </div>
-    <div class="row comments-row hidden-xs hidden-sm">
-        <div class="col-xs-12 comments">
-            <h5>Comments -</h5>
-            {% if issue.comments != None %}
-            {{ issue.comments }}
-            {% else %}
-            <a href="#">New Comment</a>
-            {% endif %}
-        </div>
-    </div>
-    <div class="row hidden-md hidden-lg">
-        <div class="col-xs-12">
-            <div class="text-center">
-                <a href="{% url 'view_issue' issue.id %}" class="btn btn-default view-issue">View Issue</a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endfor %}
-<div class="row">
-    <div class="col-xs-12 text-center">
-        <div class="pagination">
-            <span class="step-links">
-                {% if all_issues.has_previous %}
-                    <a href="?page={{ all_issues.previous_page_number }}">previous</a>
-                {% endif %}
-                <span class="current">
-                    Page {{ all_issues.number }} of {{ all_issues.paginator.num_pages }}.
-                </span>
-                {% if all_issues.has_next %}
-                    <a href="?page={{ all_issues.next_page_number }}">next</a>
-                {% endif %}    
-            </span>
-        </div>
-    </div>
 </div>
 {% endblock %}

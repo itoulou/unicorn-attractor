@@ -6,8 +6,10 @@ from django.contrib.auth.models import User
 from authentication.models import UserProfile
 from authentication.forms import userProfileForm
 from issue_tracker.models import Issue
+from feature_requests.models import FeatureRequest
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
@@ -73,6 +75,7 @@ def register(request):
         # profile_picture_form = profilePictureForm()
     return render(request, 'register.html', {"register_form": register_form})
 
+@csrf_exempt
 def profile(request, pk=None):
     """
     user can access own profile page.
@@ -80,20 +83,37 @@ def profile(request, pk=None):
     """
     picture_form = userProfileForm(request.FILES)
     all_issues = Issue.objects.filter(author=request.user).order_by("-published_date")
-    if all_issues:
-        paginator = Paginator(all_issues, 2)
-        page = request.GET.get('page')
-        try:
-            all_issues = paginator.page(page)
-        except PageNotAnInteger:
-            all_issues = paginator.page(1)
-        except EmptyPage:
-            all_issues = paginator.page(paginator.num_pages)
-        paginator.page(paginator.num_pages)  
-        return render(request, "profile.html", {"all_issues": all_issues,
-                                                "picture_form": picture_form,
-                                                })
-    else:
-        picture_form = userProfileForm(request.FILES)
-    return render(request, 'profile.html', {"picture_form": picture_form})
+    paginator = Paginator(all_issues, 2)
+    page = request.GET.get('page-issues')
+    # page = request.POST.get('page-issues')
+    print(page)
+    try:
+        all_issues = paginator.page(page)
+        print(all_issues)
+    except PageNotAnInteger:
+        all_issues = paginator.page(1)
+    except EmptyPage:
+        all_issues = paginator.page(paginator.num_pages)
+        paginator.page(paginator.num_pages) 
+    
+    all_features = FeatureRequest.objects.filter(author=request.user).order_by("-published_date")
+    paginator = Paginator(all_features, 2)
+    page = request.GET.get('page-features')
+    try:
+        all_features= paginator.page(page)
+        print(all_issues)
+    except PageNotAnInteger:
+        all_features = paginator.page(1)
+    except EmptyPage:
+        all_features = paginator.page(paginator.num_pages)
+        paginator.page(paginator.num_pages)
+        
+    return render(request, "profile.html", {"all_issues": all_issues,
+                                        "all_features": all_features,
+                                        "picture_form": picture_form,
+                                        })
+
+    # else:
+    #     picture_form = userProfileForm(request.FILES)
+    # return render(request, 'profile.html', {"picture_form": picture_form})
 

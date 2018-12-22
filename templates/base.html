@@ -12,8 +12,6 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" type="text/css" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="{% static 'js/base.js' %}"></script>
-    {% block jquery %}{% endblock %}
 </head>
 
 <body>
@@ -27,7 +25,7 @@
                 <li><a href="#">Contact</a></li>
                 <hr>
                 <li><a href="{% url 'all_issues' %}">Issues</a></li>
-                <li><a href="#">Requests</a></li>
+                <li><a href="{% url 'all_features' %}">Features</a></li>
                 <hr>
                 <li><a href="{% url 'logout' %}">Logout</a></li>
                 {% else %}
@@ -42,7 +40,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
                     <li><a href="{% url 'all_issues' %}">Issues</a></li>
-                    <li><a href="#">Requests</a></li>
+                    <li><a href="{% url 'all_features' %}">Features</a></li>
                     <li role="presentation" class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                          <span class="nav-user">{{ user.username.title }}</span><span class="caret"></span>
@@ -75,36 +73,38 @@
         </div>
     </div>
     {% block content %}{% endblock %}
-    <footer class="footer">
-        <div class="row">
-            <div class="col-xs-12 col-md-8">
-                <h5>Footer Content</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Assumenda perspiciatis numquam dolores vero velit sequi quae
-                delectus praesentium amet ipsum, quis ex. Eius quasi suscipit
-                alias maiores eos saepe minima, accusamus expedita numquam.
-                Soluta quis non consequuntur, similique debitis voluptatum.</p>
-            </div>
-            <div class="col-xs-12 col-md-4">
-                <ul>
-                    <li><a href="{% url 'all_issues' %}">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 text-right">
-                <a href="">Back to top <i class="glyphicon glyphicon-chevron-up"></i></a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 text-center copyright">
-                <i class="glyphicon glyphicon-copyright-mark"></i>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing.</p>
-            </div>
-        </div>
-    </footer>
+    <!--<footer class="footer">-->
+    <!--    <div class="row">-->
+    <!--        <div class="col-xs-12 col-md-8">-->
+    <!--            <h5>Footer Content</h5>-->
+    <!--            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.-->
+    <!--            Assumenda perspiciatis numquam dolores vero velit sequi quae-->
+    <!--            delectus praesentium amet ipsum, quis ex. Eius quasi suscipit-->
+    <!--            alias maiores eos saepe minima, accusamus expedita numquam.-->
+    <!--            Soluta quis non consequuntur, similique debitis voluptatum.</p>-->
+    <!--        </div>-->
+    <!--        <div class="col-xs-12 col-md-4">-->
+    <!--            <ul>-->
+    <!--                <li><a href="{% url 'all_issues' %}">Home</a></li>-->
+    <!--                <li><a href="#">About</a></li>-->
+    <!--                <li><a href="#">Contact</a></li>-->
+    <!--            </ul>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--    <div class="row">-->
+    <!--        <div class="col-xs-12 text-right">-->
+    <!--            <a href="">Back to top <i class="glyphicon glyphicon-chevron-up"></i></a>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--    <div class="row">-->
+    <!--        <div class="col-xs-12 text-center copyright">-->
+    <!--            <i class="glyphicon glyphicon-copyright-mark"></i>-->
+    <!--            <p>Lorem ipsum dolor sit amet, consectetur adipisicing.</p>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--</footer>-->
+    <script src="{% static 'js/base.js' %}"></script>
+    {% block jquery %}{% endblock %}
 </body>
 
 </html>

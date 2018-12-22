@@ -5,7 +5,7 @@ from authentication.models import UserProfile
 from django.conf import settings
 
 # Create your models here.
-class Issue(models.Model):
+class FeatureRequest(models.Model):
     """
     A single Issue
     """
@@ -15,7 +15,7 @@ class Issue(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     published_date = models.DateTimeField(blank=True, null=True, default=timezone.now())
     total_votes = models.IntegerField(default=0)
-    vote = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="votes")
+    vote = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="feature_votes")
     tag = models.CharField(max_length=30, blank=True, null=True)
     image = models.ImageField(upload_to="images", blank=True, null=True)
     done = models.BooleanField(default=False)
@@ -28,8 +28,8 @@ class Comment(models.Model):
     """
     A single comment object specific to issue
     """
-    issue = models.ForeignKey(Issue)
-    user_logged_in = models.ForeignKey('auth.User', null=True, blank=False)
+    feature_request = models.ForeignKey(FeatureRequest)
+    user_logged_in = models.ForeignKey('auth.User', null=True, blank=False, related_name="user_logged_in")
     image = models.ImageField(null=True, blank=True)
     content = models.TextField(max_length=100, null=True, blank=False)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -38,6 +38,3 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return self.issue
-
-
-        
