@@ -4,12 +4,14 @@ from authentication.forms import loginForm, registerForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from authentication.models import UserProfile
-from authentication.forms import userProfileForm
+from authentication.forms import userProfileForm, PaymentForm, AddressForm
 from issue_tracker.models import Issue
 from feature_requests.models import FeatureRequest
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+import stripe
 
 
 # Create your views here.
@@ -17,7 +19,25 @@ def index(request):
     """
     render homepage page
     """
-    return render(request, 'index.html')
+    
+    user = request.user
+    if user.is_authenticated():
+        user_subscribed = UserProfile.objects.get(user=user).subscribed
+        print(user_subscribed)
+        address_form = AddressForm()
+        payment_form = PaymentForm()
+        return render(request, 'index.html', {"payment_form": payment_form,
+                                              "address_form": address_form,
+                                              "user_subscribed": user_subscribed,
+                                         })
+    else: 
+        address_form = AddressForm()
+        payment_form = PaymentForm()
+        return render(request, 'index.html', {"payment_form": payment_form,
+                                              "address_form": address_form,})
+    
+    
+                                        
 
 def login(request):
     """
@@ -34,7 +54,8 @@ def login(request):
             
             if user_logged_in:
                 auth.login(user=user_logged_in, request=request)
-                messages.success(request, "Logged in as ")
+                user = str(user_logged_in.username.title())
+                messages.success(request, "Logged in as " + user)
                 return redirect(reverse('index'))
             else:
                 login_form.add_error(None, "username or password is incorrect")
@@ -66,7 +87,8 @@ def register(request):
                                                password=request.POST['password1'])
             if user_registered:
                 auth.login(user=user_registered, request=request)
-                messages.success(request, "Welcome to Unicorn Attractor ")
+                user = str(user_registered.username.title())
+                messages.success(request, "Welcome to Unicorn Attractor " + user)
                 return redirect(reverse('index'))
             else:
                 messages.error(request, 'A problem occured, please try to register again')
@@ -117,3 +139,47 @@ def profile(request, pk=None):
     #     picture_form = userProfileForm(request.FILES)
     # return render(request, 'profile.html', {"picture_form": picture_form})
 
+stripe.api_key = settings.STRIPE_SECRET
+
+@login_required
+def subscribe(request):
+    """
+    User can pay for subscription
+    """
+    
+    if request.method == "POST":
+        address_form = AddressForm(request.POST)
+        payment_form = PaymentForm(request.POST)
+        
+        if address_form.is_valid() and payment_form.is_valid():
+            address = address_form.save(commit=False)
+            address.date = timezone.now()
+            address.save()
+            
+            try:
+                subscriber = stripe.Charge.create(
+                        amount = 9.99,
+                        currency = "GBP",
+                        description = request.user.email,
+                        card = payment_form.cleaned_data['stripe_id'],
+                    )
+            except stripe.error.CardError:
+                messages.error(request, "Your card was declined")
+                
+            if customer.paid:
+                messages.error(request, "You have successfully subscribed")
+                return redirect(reverse('index'))
+            else:
+                messages.error(request, "Unable to make payment")
+        
+        else:
+            print(payment_form.errors)
+            error = "We were unable to take a payment with that card"
+            messages.error(request, error)
+        
+    else:
+        payment_form = PaymentForm()
+        address_form = AddressForm()
+            
+                
+    return redirect(reverse('index'))

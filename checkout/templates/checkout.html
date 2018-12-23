@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load bootstrap_tags %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-xs-12">
+        <form method="POST">
+            {% csrf_token %}
+            {{ address_form | as_bootstrap }}
+            <br>
+            <hr>
+            <br>
+            {{ card_form | as_bootstrap  }}
+            <button class="btn btn-default" type="submit">Pay</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

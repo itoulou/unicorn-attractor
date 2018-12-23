@@ -342,8 +342,12 @@ blockquote {
         top: 0;
     }
     /*profile.html-------------------------*/
+    .profile-img-div{
+        text-align: left;
+    }
+    
     .add-profile-picture{
-        left: 90px;
+        left: 100px;
         top: 140px;
         position: absolute;
     }

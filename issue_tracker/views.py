@@ -139,10 +139,10 @@ def done(request, pk):
     is_done = request.POST.get('is_done')
     if request.method == "POST":
         if str(is_done) == "true":
-            issue.done = True;
+            issue.done = True
             issue.save()
         else:
-            issue.done = False;
+            issue.done = False
             issue.save()
     return JsonResponse(data)
 

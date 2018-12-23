@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'issue_tracker',
     'feature_requests', 
     'search',
+    'checkout',
 ]
 
 MIDDLEWARE = [
