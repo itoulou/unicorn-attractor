@@ -3,12 +3,13 @@ from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.utils import timezone
 from authentication.models import UserProfile
 from feature_requests.models import FeatureRequest, Comment
-from django.contrib.auth.models import User
 from feature_requests.forms import FeatureForm, CommentForm
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 
 # Create your views here.
@@ -20,7 +21,7 @@ def get_all_features(request):
     """ 
     all_features = FeatureRequest.objects.filter(published_date__lte=timezone.now()).order_by("-total_votes")
     paginator = Paginator(all_features, 2)
-    page = request.GET.get('page')
+    page = request.GET.get('page-features')
     try:
         all_features = paginator.page(page)
     except PageNotAnInteger:
@@ -103,27 +104,39 @@ def delete_feature(request, pk):
     feature.delete()
     
     return redirect(get_all_features)
-    
+
+@csrf_exempt   
 def vote(request, pk):
     """
     User in session can vote for an feature if it's helped them
     """
     feature = get_object_or_404(FeatureRequest, pk=pk)
     user = request.user
-    up_vote = True
-    if user.is_authenticated():
-        if user in feature.vote.all():
-            feature.vote.remove(user)
-            up_vote = False
-        else:
-            feature.vote.add(user)
-    feature.total_votes = feature.vote.count()
-    feature.save()
-    print(up_vote)
-    data = {
-        "up_vote": up_vote
-    }
-    return JsonResponse(data)
+    user_subscribed = UserProfile.objects.get(user=user).subscribed
+    vote_number = feature.total_votes
+    # print(user_subscribed)
+    if user_subscribed:
+        if user.is_authenticated():
+            if user in feature.vote.all():
+                feature.vote.remove(user)
+                up_vote = False
+                vote_number -= 1
+            else:
+                feature.vote.add(user)
+                up_vote = True
+                vote_number += 1
+        feature.total_votes = feature.vote.count()
+        feature.save()
+        print(up_vote)
+        print(vote_number)
+        data = {
+            "up_vote": up_vote,
+            "vote_number": vote_number
+        }
+        return JsonResponse(data)
+        
+    
+        
 
 @csrf_exempt
 def done(request, pk):

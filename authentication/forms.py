@@ -57,7 +57,7 @@ class userProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ['image']
     
-class PaymentForm(forms.Form):
+class subscriptionPaymentForm(forms.Form):
     """
     Card details form
     """
@@ -70,7 +70,7 @@ class PaymentForm(forms.Form):
     expiry_year = forms.ChoiceField(label="Year", choices=YEAR_CHOICES, required=False)
     stripe_id = forms.CharField(widget=forms.HiddenInput)
 
-class AddressForm(forms.ModelForm):
+class subscriptionAddressForm(forms.ModelForm):
         """
         Address form for paymet
         """

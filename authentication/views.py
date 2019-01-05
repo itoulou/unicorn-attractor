@@ -1,10 +1,9 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.contrib import auth, messages
-from authentication.forms import loginForm, registerForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from authentication.models import UserProfile
-from authentication.forms import userProfileForm, PaymentForm, AddressForm
+from authentication.forms import loginForm, registerForm, userProfileForm, subscriptionPaymentForm, subscriptionAddressForm
 from issue_tracker.models import Issue
 from feature_requests.models import FeatureRequest
 from django.utils import timezone
@@ -24,15 +23,15 @@ def index(request):
     if user.is_authenticated():
         user_subscribed = UserProfile.objects.get(user=user).subscribed
         print(user_subscribed)
-        address_form = AddressForm()
-        payment_form = PaymentForm()
+        address_form = subscriptionAddressForm()
+        payment_form = subscriptionPaymentForm()
         return render(request, 'index.html', {"payment_form": payment_form,
                                               "address_form": address_form,
                                               "user_subscribed": user_subscribed,
                                          })
     else: 
-        address_form = AddressForm()
-        payment_form = PaymentForm()
+        address_form = subscriptionAddressForm()
+        payment_form = subscriptionPaymentForm()
         return render(request, 'index.html', {"payment_form": payment_form,
                                               "address_form": address_form,})
     
@@ -148,8 +147,8 @@ def subscribe(request):
     """
     
     if request.method == "POST":
-        address_form = AddressForm(request.POST)
-        payment_form = PaymentForm(request.POST)
+        address_form = subscriptionAddressForm(request.POST)
+        payment_form = subscriptionPaymentForm(request.POST)
         
         if address_form.is_valid() and payment_form.is_valid():
             address = address_form.save(commit=False)
@@ -158,7 +157,7 @@ def subscribe(request):
             
             try:
                 subscriber = stripe.Charge.create(
-                        amount = 9.99,
+                        amount = int(12.99 * 100),
                         currency = "GBP",
                         description = request.user.email,
                         card = payment_form.cleaned_data['stripe_id'],
@@ -166,7 +165,7 @@ def subscribe(request):
             except stripe.error.CardError:
                 messages.error(request, "Your card was declined")
                 
-            if customer.paid:
+            if subscriber.paid:
                 messages.error(request, "You have successfully subscribed")
                 return redirect(reverse('index'))
             else:
@@ -178,8 +177,8 @@ def subscribe(request):
             messages.error(request, error)
         
     else:
-        payment_form = PaymentForm()
-        address_form = AddressForm()
+        payment_form = subscriptionPaymentForm()
+        address_form = subscriptionAddressForm()
             
                 
     return redirect(reverse('index'))

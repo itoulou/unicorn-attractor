@@ -1,10 +1,23 @@
 {% extends 'base.html' %}
 {% load bootstrap_tags %}
+{% load static from staticfiles %}
 {% block title %}Checkout{% endblock %}
+{% block head_js %}
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript">
+    //<![CDATA[
+    Stripe.publishableKey = '{{ publishable }}';
+    //]]>
+</script>
+<script type="text/javascript" src="{% static 'js/stripe.js' %}"></script>
+{% endblock %}
 {% block content %}
+{% for message in messages %}
+<h3>{{ message }}</h3>
+{% endfor %}
 <div class="row">
     <div class="col-xs-12">
-        <form method="POST">
+        <form role="form" method="POST" id="payment-form" action="{% url 'single_payment_checkout' pk %}">
             {% csrf_token %}
             {{ address_form | as_bootstrap }}
             <br>

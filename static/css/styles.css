@@ -59,7 +59,6 @@ nav {
 
 .profile-issues-features {
     background-color: rgba(100, 100, 100, 0.95);
-    height: 100vh;
     position: absolute;
     width: 100%;
     z-index: 9999;

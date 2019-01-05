@@ -32,37 +32,54 @@ $(document).ready(function(){
         tag.text(votes);
     }
     $(".vote-btn").click(function(e){
-        e.preventDefault();
         $(this).toggleClass("voted");
-        var vote_url = "{% url 'feature-vote' feature.id %}";
+        var voteUrl = "{% url 'feature-vote' feature.id %}";
         var vote = parseInt($(".vote-count").attr("data-votes"), 10);
-        var previousVote = vote - 1;
         var voteClicked = $(this).hasClass("voted");
+        var featureId = window.location.pathname.split("/feature-requests/")[1].split("/")[0];
+        var checkoutUrl = "";
+        // var featureUrl = window.location.pathname;
+        // var featureIdUrl = "";
+        // var csrfToken = document.cookie.split(";")[1].split("csrftoken=")[1];
         $.ajax({
-            url: vote_url,
-            method: "GET",
-            data: {},
+            url: voteUrl,
+            method: "POST",
             dataType: 'json',
             success: function(data){
                 console.log(data);
-                
               if (voteClicked){
                   console.log(data.up_vote);
-                  vote ++;
+                  vote = data.vote_number;
                   console.log("newVote " + vote);
                   updateVotes($(".vote-count"), vote);
               } else {
                   console.log(data.up_vote);
+                  vote = data.vote_number;
                   console.log("original vote " + vote);
                   updateVotes($(".vote-count"), vote);
-              }
+              } 
+              
+            },
+            error: function(xhr, status, errorThrown){
+                console.log(xhr.status);
+                console.log(featureId);
+                window.location.href = "/checkout/" + featureId;
+                // $.post(checkoutUrl, {"feature_id": featureId}, function(data) {
+                // });
             }
+            
         });
+        e.preventDefault();
     });
 });
 </script>
 {% endblock %}
 {% block content %}
+<div>
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+</div>
 <div class="row">
     {% for author_image in author_image %}
     {% if author_image.image.url != None %}
@@ -117,7 +134,8 @@ $(document).ready(function(){
 <br>
 <div class="row view-issue-votes-content">
     <div class="col-xs-3 text-center">
-        <form action="{% url 'feature-vote' feature.id %}" method="POST">
+        <!--<form action="{% url 'feature-vote' feature.id %}" method="POST">-->
+        <form>
         {% csrf_token %}
         {% if user in feature.vote.all %}
         <button class="glyphicon glyphicon-chevron-up vote-btn voted" name="vote-up"></button>
