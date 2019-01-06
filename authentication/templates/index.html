@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
+{% load static from staticfiles %}
 {% load bootstrap_tags %}
 {% block title %}Homepage{% endblock %}
+{% block head_js %}
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript">
+    //<![CDATA[
+    Stripe.publishableKey = '{{ publishable }}';
+    //]]>
+</script>
+<script type="text/javascript" src="{% static 'js/stripe.js' %}"></script>
+{% endblock %}
 {% block content %}
 <h1>Home</h1>
 {% if messages %}
@@ -10,51 +20,44 @@
     {% endfor %}
 </div>
 {% endif %}
+{% if logged_in %}
 <div class="row">
     <div class="col-xs-12">
-        <!--<form action="" method="POST">-->
-        <!--    {% csrf_token %}-->
-        <!--    {% if something %}-->
-        <!--    <button class="btn btn-default subscribe-btn">Subscribe</button>-->
-        <!--    {% else %}-->
-        <!--    <button class="btn btn-default subscribe-btn glyphicon glyphicon-ok"><span> Unsubscribe</span></button>-->
-        <!--    {% endif %}-->
-        <!--</form>-->
-        {% if user.is_authenticated %}
-          {% if user_subscribed == False %}
-          <a class="btn btn-default subscribe-btn" data-toggle="modal" data-target="#subscribe">Subscribe</a>
-          {% else %}
-          <a class="btn btn-default subscribe-btn"><i class="glyphicon glyphicon-ok"style="margin-right: 3px;"></i><span style="border-left: 1.5px solid #000;"> Unubscribe</span></a>
-          {% endif %}
+        {% if user_subscribed == False %}
+        <a class="btn btn-default subscribe-btn" data-toggle="modal" data-target="#subscribe">Subscribe</a>
+        {% else %}
+        <a class="btn btn-default subscribe-btn"><i class="glyphicon glyphicon-ok"style="margin-right: 3px;"></i><span class="subscribed"> Unubscribe</span></a>
         {% endif %}
-        <div class="modal fade" id="subscribe" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel" style="display:inline-block;">Enter your billing address</h4>
-                <i class="glyphicon glyphicon-home"></i>
-              </div>
-              <div class="modal-body">
-                <form action="{% url 'subscribe' %}" method="POST">
-                    {% csrf_token %}
-                    {{ address_form | as_bootstrap }}
-                    <br>
-                    <div class="modal-header">
-                      <h4 class="modal-title" id="myModalLabel" style="display:inline-block;">Enter your card details</h4>
-                      <i class="glyphicon glyphicon-credit-card"></i>
-                    </div>
-                    <br>
-                    {{ payment_form | as_bootstrap }}
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Subscribe</button>
-                </form>
-              </div>
+      
+      <div class="modal fade" id="subscribe" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel" style="display:inline-block;">Enter your billing address</h4>
+              <i class="glyphicon glyphicon-home"></i>
+            </div>
+            <div class="modal-body">
+              <form role="form" method="POST" id="payment-form" action="{% url 'index' %}">
+                  {% csrf_token %}
+                  {{ address_form | as_bootstrap }}
+                  <br>
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel" style="display:inline-block;">Enter your card details</h4>
+                    <i class="glyphicon glyphicon-credit-card"></i>
+                  </div>
+                  <br>
+                  {{ card_form | as_bootstrap }}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Subscribe</button>
+              </form>
             </div>
           </div>
         </div>
+      </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}

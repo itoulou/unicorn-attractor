@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'feature_requests', 
     'search',
     'checkout',
+    'subscription',
 ]
 
 MIDDLEWARE = [

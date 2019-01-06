@@ -32,7 +32,7 @@ def single_payment_checkout(request, pk):
            
             feature_request = FeatureRequest.objects.get(id=pk)
             single_payment_line_item = SinglePaymentLineItem(
-                single_payment = order,
+                single_payment=order,
                 feature_request=feature_request
                 )
             single_payment_line_item.save()

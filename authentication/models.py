@@ -11,15 +11,6 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, null=True, blank=False)
     image = models.ImageField(upload_to="images", blank=True, null=True)
     subscribed = models.BooleanField(default=False)
-    full_name = models.CharField(max_length=50, blank=False, null=True)
-    phone_number = models.CharField(max_length=20, blank=False, null=True)
-    country = models.CharField(max_length=40, blank=False, null=True)
-    postcode = models.CharField(max_length=15, blank=False, null=True)
-    town_or_city = models.CharField(max_length=30, blank=False, null=True)
-    street_address1 = models.CharField(max_length=40, blank=False, null=True)
-    street_address2 = models.CharField(max_length=40, blank=False, null=True)
-    county = models.CharField(max_length=30, blank=True, null=True)
-    date = models.DateField(null=True)
     
     def __str__(self):
         return self.user.username

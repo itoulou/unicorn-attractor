@@ -3,9 +3,11 @@ from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from authentication.models import UserProfile
-from authentication.forms import loginForm, registerForm, userProfileForm, subscriptionPaymentForm, subscriptionAddressForm
+from authentication.forms import loginForm, registerForm, userProfileForm
 from issue_tracker.models import Issue
 from feature_requests.models import FeatureRequest
+from subscription.models import SubscriptionPayment
+from subscription.forms import subscriptionPaymentForm, subscriptionAddressForm 
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
@@ -14,29 +16,67 @@ import stripe
 
 
 # Create your views here.
+
+stripe.api_key = settings.STRIPE_SECRET
+
 def index(request):
     """
     render homepage page
+    User can subscribe on the homepage in order to have unlimited feature
+    votes
     """
-    
-    user = request.user
-    if user.is_authenticated():
-        user_subscribed = UserProfile.objects.get(user=user).subscribed
-        print(user_subscribed)
+    if request.method == "POST":
+        address_form = subscriptionAddressForm(request.POST)
+        card_form = subscriptionPaymentForm(request.POST)
+        
+        if address_form.is_valid() and card_form.is_valid():
+            subscription = address_form.save(commit=False)
+            subscription.date = timezone.now()
+            subscription.user = request.user
+            subscription.save()
+            
+            try:
+                customer = stripe.Charge.create(
+                    amount = int(13.99 * 100),
+                    currency = "GBP",
+                    description = request.user.email,
+                    card = card_form.cleaned_data['stripe_id'],
+                    )
+            except stripe.error.CardError:
+                messages.error(request, "Your card was declined")
+                
+            if customer.paid:
+                user_subscribed = UserProfile.objects.get(user=request.user)
+                user_subscribed.subscribed = True
+                user_subscribed.save()
+                messages.error(request, "You have successfully subscribed")
+                return redirect('index')
+            else:
+                messages.error(request, "Unable to take payment")
+        else:
+            print(card_form.errors)
+            messages.error(request, "We were unable to take a payment with that card")
+    else:
+        if request.user.is_authenticated:
+            user_subscribed = UserProfile.objects.get(user=request.user).subscribed
+            logged_in = True
+            print("A")
+        else:
+            user_subscribed = False
+            logged_in = False
+            print("B")
+        card_form = subscriptionPaymentForm()
         address_form = subscriptionAddressForm()
-        payment_form = subscriptionPaymentForm()
-        return render(request, 'index.html', {"payment_form": payment_form,
-                                              "address_form": address_form,
-                                              "user_subscribed": user_subscribed,
+    return render(request, 'index.html', {
+                                         "user_subscribed": user_subscribed,
+                                         "logged_in": logged_in,
+                                         "card_form": card_form,
+                                         "address_form":address_form,
+                                         "publishable": settings.STRIPE_PUBLISHABLE,
                                          })
-    else: 
-        address_form = subscriptionAddressForm()
-        payment_form = subscriptionPaymentForm()
-        return render(request, 'index.html', {"payment_form": payment_form,
-                                              "address_form": address_form,})
-    
     
                                         
+
 
 def login(request):
     """
@@ -138,47 +178,3 @@ def profile(request, pk=None):
     #     picture_form = userProfileForm(request.FILES)
     # return render(request, 'profile.html', {"picture_form": picture_form})
 
-stripe.api_key = settings.STRIPE_SECRET
-
-@login_required
-def subscribe(request):
-    """
-    User can pay for subscription
-    """
-    
-    if request.method == "POST":
-        address_form = subscriptionAddressForm(request.POST)
-        payment_form = subscriptionPaymentForm(request.POST)
-        
-        if address_form.is_valid() and payment_form.is_valid():
-            address = address_form.save(commit=False)
-            address.date = timezone.now()
-            address.save()
-            
-            try:
-                subscriber = stripe.Charge.create(
-                        amount = int(12.99 * 100),
-                        currency = "GBP",
-                        description = request.user.email,
-                        card = payment_form.cleaned_data['stripe_id'],
-                    )
-            except stripe.error.CardError:
-                messages.error(request, "Your card was declined")
-                
-            if subscriber.paid:
-                messages.error(request, "You have successfully subscribed")
-                return redirect(reverse('index'))
-            else:
-                messages.error(request, "Unable to make payment")
-        
-        else:
-            print(payment_form.errors)
-            error = "We were unable to take a payment with that card"
-            messages.error(request, error)
-        
-    else:
-        payment_form = subscriptionPaymentForm()
-        address_form = subscriptionAddressForm()
-            
-                
-    return redirect(reverse('index'))
