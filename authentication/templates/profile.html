@@ -37,6 +37,9 @@ $(document).ready(function(){
 </script>
 {% endblock %}
 {% block content %}
+{% for message in messages %}
+{{ message }}
+{% endfor %}
 <h1>{{ user.username.title }}'s Profile</h1>
 <p>{{ user.userprofile }}</p>
 <!---------------------------------------------------------------------------issues---------------------------------->
@@ -237,7 +240,7 @@ $(document).ready(function(){
         <img src="{{ user.userprofile.image.url }}" alt="" style="width: 300px; height:300px; border-radius: 50%;"> 
         <a href="" type="button" data-toggle="modal" data-target="#myModal">Change profile picture<a>
         {% else %}
-        <a href="" type="button" data-toggle="modal" data-target="#myModal">
+        <a href="" type="button" data-toggle="modal" data-target="#add-profile-img">
             <img style="background-color: #eee; width:300px; height:300px; border-radius: 50%;" >
             <p class="add-profile-picture">Add a profile picture?</p>
         </a>
@@ -245,7 +248,7 @@ $(document).ready(function(){
     </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="add-profile-img" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -253,7 +256,7 @@ $(document).ready(function(){
         <h4 class="modal-title" id="myModalLabel">Upload a profile picture</h4>
       </div>
       <div class="modal-body">
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" action="{% url 'profile' %}" enctype="multipart/form-data">
             {% csrf_token %}
             {{ picture_form | as_bootstrap }}
       </div>

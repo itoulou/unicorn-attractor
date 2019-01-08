@@ -16,4 +16,4 @@ class SubscriptionPayment(models.Model):
     date = models.DateField()
     
     def __str__(self):
-        return "{0}-{1}-{2}".format(self.id, self.date, self.full_name)
+        return "{0}-{1}-{2}-{3}".format(self.id, self.date, self.full_name, self.user)

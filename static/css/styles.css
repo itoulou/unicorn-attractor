@@ -68,6 +68,7 @@ nav {
     position: absolute;
     width: 100%;
     z-index: 9999;
+    height: 100%;
 }
 
 /*-------------------------------------------------issues.html(all-issues)*/

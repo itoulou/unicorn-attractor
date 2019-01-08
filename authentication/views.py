@@ -2,17 +2,24 @@ from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from authentication.models import UserProfile
-from authentication.forms import loginForm, registerForm, userProfileForm
-from issue_tracker.models import Issue
-from feature_requests.models import FeatureRequest
-from subscription.models import SubscriptionPayment
-from subscription.forms import subscriptionPaymentForm, subscriptionAddressForm 
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import stripe
+
+from authentication.models import UserProfile
+from authentication.forms import loginForm, registerForm, userProfileForm
+
+from issue_tracker.models import Issue
+from feature_requests.models import FeatureRequest
+
+from subscription.models import SubscriptionPayment
+from subscription.forms import subscriptionPaymentForm, subscriptionAddressForm
+
+from unicorn_attractor.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME, AWS_S3_REGION_NAME
+from boto3.session import Session
+import boto3
 
 
 # Create your views here.
@@ -60,11 +67,9 @@ def index(request):
         if request.user.is_authenticated:
             user_subscribed = UserProfile.objects.get(user=request.user).subscribed
             logged_in = True
-            print("A")
         else:
             user_subscribed = False
             logged_in = False
-            print("B")
         card_form = subscriptionPaymentForm()
         address_form = subscriptionAddressForm()
     return render(request, 'index.html', {
@@ -142,7 +147,22 @@ def profile(request, pk=None):
     user can access own profile page.
     If user has created issues, the issues will display on their profile page
     """
-    picture_form = userProfileForm(request.FILES)
+    if request.method == "POST":
+        picture_form = request.FILES.get('image')
+        profile = UserProfile.objects.get(user=request.user)
+        # import pdb; pdb.set_trace()
+        profile.image = picture_form
+        profile.save()
+        picture_name = picture_form.name
+        session = boto3.session.Session(aws_access_key_id=AWS_ACCESS_KEY_ID,
+                                        aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+        s3 = session.resource('s3')
+        s3.Bucket(AWS_STORAGE_BUCKET_NAME).put_object(Key=picture_name, Body=profile.image)
+        return redirect('profile')
+        
+    else:
+        picture_form =  userProfileForm()
+        
     all_issues = Issue.objects.filter(author=request.user).order_by("-published_date")
     paginator = Paginator(all_issues, 2)
     page = request.GET.get('page-issues')
@@ -178,3 +198,13 @@ def profile(request, pk=None):
     #     picture_form = userProfileForm(request.FILES)
     # return render(request, 'profile.html', {"picture_form": picture_form})
 
+
+def cancel_subscription(request):
+    if request.method == "POST":
+        user_subscription_payment = SubscriptionPayment.objects.get(user=request.user)
+        user_subscription_payment.delete()
+        
+        user_subscribed = UserProfile.objects.get(user=request.user)
+        user_subscribed.subscribed = False
+        user_subscribed.save()
+    return redirect(reverse('index'))

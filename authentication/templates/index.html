@@ -26,7 +26,7 @@
         {% if user_subscribed == False %}
         <a class="btn btn-default subscribe-btn" data-toggle="modal" data-target="#subscribe">Subscribe</a>
         {% else %}
-        <a class="btn btn-default subscribe-btn"><i class="glyphicon glyphicon-ok"style="margin-right: 3px;"></i><span class="subscribed"> Unubscribe</span></a>
+        <a class="btn btn-default subscribe-btn" data-toggle="modal" data-target="#unsubscribe"><i class="glyphicon glyphicon-ok"style="margin-right: 3px;"></i><span class="subscribed"> Unubscribe</span></a>
         {% endif %}
       
       <div class="modal fade" id="subscribe" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -52,6 +52,23 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               <button type="submit" class="btn btn-primary">Subscribe</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="unsubscribe" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel" style="display:inline-block;">Are you sure want to cancel your subscription?</h4>
+            </div>
+            <div class="modal-footer">
+              <form action="{% url 'cancel_subscription' %}" method="POST">
+                {% csrf_token %}
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Cancel subscription</button>
               </form>
             </div>
           </div>
