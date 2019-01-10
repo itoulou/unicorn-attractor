@@ -4,6 +4,9 @@
 {% block jquery %}
 <script>
 $(document).ready(function(){
+    $(".delete-profile-image").click(function(){
+       return confirm("Are you sure you want to remove this image?"); 
+    });
     $(".my-issues-list").click(function(e){
         e.stopPropagation();
         e.preventDefault();
@@ -37,9 +40,6 @@ $(document).ready(function(){
 </script>
 {% endblock %}
 {% block content %}
-{% for message in messages %}
-{{ message }}
-{% endfor %}
 <h1>{{ user.username.title }}'s Profile</h1>
 <p>{{ user.userprofile }}</p>
 <!---------------------------------------------------------------------------issues---------------------------------->
@@ -238,7 +238,8 @@ $(document).ready(function(){
     <div class="col-xs-12 col-md-3 text-center profile-img-div">
         {% if user.userprofile.image %}
         <img src="{{ user.userprofile.image.url }}" alt="" style="width: 300px; height:300px; border-radius: 50%;"> 
-        <a href="" type="button" data-toggle="modal" data-target="#myModal">Change profile picture<a>
+        <a href="" type="button" data-toggle="modal" data-target="#add-profile-img">Change profile picture<a>
+        <a href="{% url 'remove_profile_img' %}" class="delete-profile-image" type="button">Remove profile picture<a>    
         {% else %}
         <a href="" type="button" data-toggle="modal" data-target="#add-profile-img">
             <img style="background-color: #eee; width:300px; height:300px; border-radius: 50%;" >

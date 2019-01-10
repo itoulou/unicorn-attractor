@@ -4,6 +4,7 @@ from django.utils import timezone
 from authentication.models import UserProfile
 from feature_requests.models import FeatureRequest, Comment
 from feature_requests.forms import FeatureForm, CommentForm
+from checkout.models import SinglePayment, SinglePaymentLineItem
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -102,7 +103,6 @@ def delete_feature(request, pk):
     """
     feature = get_object_or_404(FeatureRequest, pk=pk)
     feature.delete()
-    
     return redirect(get_all_features)
 
 @csrf_exempt   
@@ -110,12 +110,22 @@ def vote(request, pk):
     """
     User in session can vote for an feature if it's helped them
     """
-    feature = get_object_or_404(FeatureRequest, pk=pk)
+    print(pk)
     user = request.user
+    feature = get_object_or_404(FeatureRequest, pk=pk)
     user_subscribed = UserProfile.objects.get(user=user).subscribed
     vote_number = feature.total_votes
-    # print(user_subscribed)
-    if user_subscribed:
+    
+    print(request.user, "user")
+    username = UserProfile.objects.get(user=user)
+    user_paid = SinglePaymentLineItem.objects.filter(user_paid=username, feature_request=feature)
+    # import pdb; pdb.set_trace()
+    # single_feature_paid = SinglePaymentLineItem.objects.filter(feature_request=feature)
+    # print(single_feature_paid)
+    # feature_paid = SinglePaymentLineItem.objects.filter(user_paid)
+    # feature_voted = SinglePaymentLineItem
+    # user_paid.exists()
+    if user_subscribed or user_paid:
         if user.is_authenticated():
             if user in feature.vote.all():
                 feature.vote.remove(user)
@@ -127,14 +137,18 @@ def vote(request, pk):
                 vote_number += 1
         feature.total_votes = feature.vote.count()
         feature.save()
-        print(up_vote)
-        print(vote_number)
         data = {
             "up_vote": up_vote,
             "vote_number": vote_number
         }
         return JsonResponse(data)
+    
+    
         
+    """
+    If ID of the feature is the same as the ID of checkout which user 
+    has paid for then user can vote else no
+    """
     
         
 

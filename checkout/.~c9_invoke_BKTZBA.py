@@ -2,10 +2,9 @@ from django.db import models
 from authentication.models import UserProfile
 from feature_requests.models import FeatureRequest
 
-
 # Create your models here.
 class SinglePayment(models.Model):
-    user = models.ForeignKey(UserProfile, blank=False, null=True)
+    us
     full_name = models.CharField(max_length=50, blank=False)
     phone_number = models.CharField(max_length=20, blank=False)
     country = models.CharField(max_length=40, blank=False)
@@ -24,7 +23,6 @@ class SinglePayment(models.Model):
 class SinglePaymentLineItem(models.Model):
     single_payment = models.ForeignKey(SinglePayment, null=False)
     feature_request = models.ForeignKey(FeatureRequest, null=False)
-    user_paid = models.ForeignKey(UserProfile, blank=False, null=True)
     
     def __str__(self):
         return "{0}".format(self.feature_request.title)

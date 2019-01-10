@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect, reverse
+from django.contrib.auth.models import User
 from checkout.models import SinglePayment, SinglePaymentLineItem
 from checkout.forms import singlePaymentAddressForm, singlePaymentForm
 from authentication.models import UserProfile
@@ -24,16 +25,19 @@ def single_payment_checkout(request, pk):
     if request.method == "POST":
         address_form = singlePaymentAddressForm(request.POST)
         card_form = singlePaymentForm(request.POST)
+        user = UserProfile.objects.get(user=request.user)
         
         if address_form.is_valid() and card_form.is_valid():
             order = address_form.save(commit=False)
+            order.user = user
             order.date = timezone.now()
             order.save()
            
             feature_request = FeatureRequest.objects.get(id=pk)
             single_payment_line_item = SinglePaymentLineItem(
                 single_payment=order,
-                feature_request=feature_request
+                feature_request=feature_request,
+                user_paid=user
                 )
             single_payment_line_item.save()
             
@@ -44,14 +48,16 @@ def single_payment_checkout(request, pk):
                     description = request.user.email,
                     card = card_form.cleaned_data['stripe_id'],
                     )
+                if customer.paid:
+                    
+                    messages.error(request, "You have successfully paid")
+                    return redirect('view_feature', pk)
+                else:
+                    messages.error(request, "Unable to take payment")        
             except stripe.error.CardError:
                 messages.error(request, "Your card was declined")
                 
-            if customer.paid:
-                messages.error(request, "You have successfully paid")
-                return redirect('view_feature', pk)
-            else:
-                messages.error(request, "Unable to take payment")
+            
         else:
             print(card_form.errors)
             messages.error(request, "We were unable to take a payment with that card")

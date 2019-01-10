@@ -12,6 +12,7 @@ from authentication.models import UserProfile
 from authentication.forms import loginForm, registerForm, userProfileForm
 
 from issue_tracker.models import Issue
+
 from feature_requests.models import FeatureRequest
 
 from subscription.models import SubscriptionPayment
@@ -79,10 +80,7 @@ def index(request):
                                          "address_form":address_form,
                                          "publishable": settings.STRIPE_PUBLISHABLE,
                                          })
-    
-                                        
-
-
+                                         
 def login(request):
     """
     user login page
@@ -145,12 +143,12 @@ def register(request):
 def profile(request, pk=None):
     """
     user can access own profile page.
-    If user has created issues, the issues will display on their profile page
+    If user has created issues/features, the they will display on their profile page
+    user can upload a profile image or change it
     """
     if request.method == "POST":
         picture_form = request.FILES.get('image')
         profile = UserProfile.objects.get(user=request.user)
-        # import pdb; pdb.set_trace()
         profile.image = picture_form
         profile.save()
         picture_name = picture_form.name
@@ -194,12 +192,19 @@ def profile(request, pk=None):
                                         "picture_form": picture_form,
                                         })
 
-    # else:
-    #     picture_form = userProfileForm(request.FILES)
-    # return render(request, 'profile.html', {"picture_form": picture_form})
-
+def remove_profile_img(request):
+    """
+    if user wishes to remove their image all together
+    """
+    profile = UserProfile.objects.get(user=request.user)
+    if profile.image:
+        UserProfile.objects.filter(user=request.user).update(image=None)
+    return redirect('profile')
 
 def cancel_subscription(request):
+    """
+    User can cancel their subscription
+    """
     if request.method == "POST":
         user_subscription_payment = SubscriptionPayment.objects.get(user=request.user)
         user_subscription_payment.delete()

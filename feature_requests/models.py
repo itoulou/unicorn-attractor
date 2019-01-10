@@ -37,4 +37,4 @@ class Comment(models.Model):
     tag = models.CharField(max_length=30, blank=True, null=True)
 
     def __unicode__(self):
-        return self.issue
+        return self.feature_request
