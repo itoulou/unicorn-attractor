@@ -11,29 +11,41 @@ $(document).ready(function(){
         e.stopPropagation();
         e.preventDefault();
         $("#my-issues-list").removeClass("remove-issues");
+        $(".profile-issues-features").animate({"margin-top": "-25%"}, 500); 
     });
     $("#my-issues-list").click(function(e){
         e.stopPropagation(); 
+        // $(".profile-issues-features").animate({"margin-top": "25%"}, 500); 
     });
     $('body, html').click(function(e){
-        $("#my-issues-list").addClass("remove-issues");
+        $(".profile-issues-features").animate({"margin-top": "25%"}, 500);
+        setTimeout(function() {
+             $("#my-features-list").addClass("remove-issues");
+        }, 500);
+       
     });
     $(".my-features-list").click(function(e){
         e.stopPropagation();
         $("#my-features-list").removeClass("remove-issues");
+        $(".profile-issues-features").animate({"margin-top": "-25%"}, 500); 
+        
     });
     $("#my-features-list").click(function(e){
         e.stopPropagation(); 
     });
     $('body, html').click(function(e){
-        $("#my-features-list").addClass("remove-issues");
+        $(".profile-issues-features").animate({"margin-top": "25%"}, 500);
+        setTimeout(function() {
+             $("#my-issues-list").addClass("remove-issues");
+        }, 500);
     });
     $(".next-page").click(function(event){
-        // event.preventDefault();
-        // var nextUrl = $(this).attr("href");
-        // var page = nextUrl.split("?page-issues=")[1];
-        // $.post(nextUrl, {"page-issues": page}, function(data){
-        // });
+        event.preventDefault();
+        var nextUrl = $(this).attr("href");
+        var pageNumber = nextUrl.split("?page-issues=")[1];
+        $.post(nextUrl, {"page-issues": pageNumber}, function(data){
+        });
+        
     });
 });
 
@@ -42,6 +54,49 @@ $(document).ready(function(){
 {% block content %}
 <h1>{{ user.username.title }}'s Profile</h1>
 <p>{{ user.userprofile }}</p>
+<div class="row">
+    <div class="col-xs-12 col-md-3 text-center profile-img-div">
+        {% if user.userprofile.image %}
+        <img src="{{ user.userprofile.image.url }}" alt="" style="width: 300px; height:300px; border-radius: 50%;"> 
+        <a href="" type="button" data-toggle="modal" data-target="#add-profile-img">Change profile picture<a>
+        <a href="{% url 'remove_profile_img' %}" class="delete-profile-image" type="button">Remove profile picture<a>    
+        {% else %}
+        <a href="" type="button" data-toggle="modal" data-target="#add-profile-img">
+            <img style="background-color: #eee; width:300px; height:300px; border-radius: 50%;" >
+            <p class="add-profile-picture">Add a profile picture?</p>
+        </a>
+        {% endif %}
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="add-profile-img" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Upload a profile picture</h4>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{% url 'profile' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ picture_form | as_bootstrap }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save image</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12 col-md-6 text-center">
+    <a href="#" class="my-issues-list">My issues</a>
+  </div>
+  <div class="col-xs-12 col-md-6 text-center">
+    <a href="#" class="my-features-list">My requests</a>
+  </div>
+</div>
 <!---------------------------------------------------------------------------issues---------------------------------->
 <div id="my-issues-list" class="remove-issues profile-issues-features">
     <div class="row">
@@ -234,47 +289,5 @@ $(document).ready(function(){
     </div>
 </div>
 <!------------------------------------------------------------------------------------------------------------->
-<div class="row">
-    <div class="col-xs-12 col-md-3 text-center profile-img-div">
-        {% if user.userprofile.image %}
-        <img src="{{ user.userprofile.image.url }}" alt="" style="width: 300px; height:300px; border-radius: 50%;"> 
-        <a href="" type="button" data-toggle="modal" data-target="#add-profile-img">Change profile picture<a>
-        <a href="{% url 'remove_profile_img' %}" class="delete-profile-image" type="button">Remove profile picture<a>    
-        {% else %}
-        <a href="" type="button" data-toggle="modal" data-target="#add-profile-img">
-            <img style="background-color: #eee; width:300px; height:300px; border-radius: 50%;" >
-            <p class="add-profile-picture">Add a profile picture?</p>
-        </a>
-        {% endif %}
-    </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="add-profile-img" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Upload a profile picture</h4>
-      </div>
-      <div class="modal-body">
-        <form method="POST" action="{% url 'profile' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ picture_form | as_bootstrap }}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save image</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-xs-12 col-md-6 text-center">
-    <a href="#" class="my-issues-list">My issues</a>
-  </div>
-  <div class="col-xs-12 col-md-6 text-center">
-    <a href="#" class="my-features-list">My requests</a>
-  </div>
-</div>
+
 {% endblock %}

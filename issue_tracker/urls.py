@@ -7,6 +7,6 @@ urlpatterns = [
         url(r'^create-issue/$', create_or_edit_issue, name="create_issue"),
         url(r'^(?P<pk>\d+)/edit/$', create_or_edit_issue, name="edit_issue"),
         url(r'^(?P<pk>\d+)/delete/$', delete_issue, name="delete_issue"),
-        url(r'^(?P<pk>\d+)/vote/$', vote, name="vote"),
+        url(r'^(?P<pk>\d+)/vote/$', vote, name="issue-vote"),
         url(r'^(?P<pk>\d+)/done/$', done, name="done"),
     ]

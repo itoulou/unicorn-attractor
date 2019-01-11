@@ -104,25 +104,29 @@ def delete_issue(request, pk):
     issue.delete()
     
     return redirect(get_all_issues)
-    
+
+@csrf_exempt    
 def vote(request, pk):
     """
     User in session can vote for an issue if it's helped them
     """
-    issue = get_object_or_404(Issue, pk=pk)
     user = request.user
-    up_vote = True
+    issue = get_object_or_404(Issue, pk=pk)
+    vote_number = issue.total_votes
     if user.is_authenticated():
         if user in issue.vote.all():
             issue.vote.remove(user)
             up_vote = False
+            vote_number -= 1
         else:
             issue.vote.add(user)
+            up_vote = True
+            vote_number += 1
     issue.total_votes = issue.vote.count()
     issue.save()
-    print(up_vote)
     data = {
-        "up_vote": up_vote
+        "up_vote": up_vote,
+        "vote_number": vote_number
     }
     return JsonResponse(data)
 

@@ -11,7 +11,7 @@ $(document).ready(function(){
         $('#myInput').focus();
     });
     $('.done-btn').click(function(e){
-        e.preventDefault()
+        e.preventDefault();
         var this_ = $(this)
         this_.toggleClass("glyphicon glyphicon-ok");
         this_.text(function(i, text) {
@@ -32,31 +32,38 @@ $(document).ready(function(){
         tag.text(votes);
     }
     $(".vote-btn").click(function(e){
-        e.preventDefault();
-        $(this).toggleClass("voted");
-        var vote_url = "{% url 'vote' issue.id %}";
-        var vote = parseInt($(".vote-count").attr("data-votes"), 10);
-        var previousVote = vote - 1;
-        var voteClicked = $(this).hasClass("voted");
-        $.ajax({
-            url: vote_url,
-            method: "GET",
-            data: {},
-            dataType: 'json',
-            success: function(data){
-                console.log(data);
-                
-              if (voteClicked){
-                  console.log(data.up_vote);
-                  vote ++;
-                  console.log("newVote " + vote);
-                  updateVotes($(".vote-count"), vote);
-              } else {
-                  console.log(data.up_vote);
-                  console.log("original vote " + vote);
-                  updateVotes($(".vote-count"), vote);
-              }
-            }
+    e.preventDefault();
+    $(this).toggleClass("voted");
+    var voteUrl = "{% url 'issue-vote' issue.id %}";
+    var vote = parseInt($(".vote-count").attr("data-votes"), 10);
+    var voteClicked = $(this).hasClass("voted");
+    // var featureId = window.location.pathname.split("/issue-requests/")[1].split("/")[0];
+    $.ajax({
+        url: voteUrl,
+        method: "POST",
+        dataType: 'json',
+        success: function(data){
+            console.log(data);
+          if (voteClicked){
+              console.log(data.up_vote);
+              vote = data.vote_number;
+              console.log("newVote " + vote);
+              updateVotes($(".vote-count"), vote);
+              
+          } else {
+              console.log(data.up_vote);
+              vote = data.vote_number;
+              console.log("original vote " + vote);
+              updateVotes($(".vote-count"), vote);
+          } 
+          
+        }
+        // error: function(xhr, status, errorThrown){
+        //     console.log(xhr.status);
+        //     console.log(featureId);
+        //     window.location.href = "/checkout/" + featureId;
+        // }
+            
         });
     });
 });
@@ -117,7 +124,7 @@ $(document).ready(function(){
 <br>
 <div class="row view-issue-votes-content">
     <div class="col-xs-3 text-center">
-        <form action="{% url 'vote' issue.id %}" method="POST">
+        <form>
         {% csrf_token %}
         {% if user in issue.vote.all %}
         <button class="glyphicon glyphicon-chevron-up vote-btn voted" name="vote-up"></button>

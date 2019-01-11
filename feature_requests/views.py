@@ -110,21 +110,12 @@ def vote(request, pk):
     """
     User in session can vote for an feature if it's helped them
     """
-    print(pk)
     user = request.user
     feature = get_object_or_404(FeatureRequest, pk=pk)
     user_subscribed = UserProfile.objects.get(user=user).subscribed
     vote_number = feature.total_votes
-    
-    print(request.user, "user")
     username = UserProfile.objects.get(user=user)
     user_paid = SinglePaymentLineItem.objects.filter(user_paid=username, feature_request=feature)
-    # import pdb; pdb.set_trace()
-    # single_feature_paid = SinglePaymentLineItem.objects.filter(feature_request=feature)
-    # print(single_feature_paid)
-    # feature_paid = SinglePaymentLineItem.objects.filter(user_paid)
-    # feature_voted = SinglePaymentLineItem
-    # user_paid.exists()
     if user_subscribed or user_paid:
         if user.is_authenticated():
             if user in feature.vote.all():

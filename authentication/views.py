@@ -31,7 +31,7 @@ def index(request):
     """
     render homepage page
     User can subscribe on the homepage in order to have unlimited feature
-    votes
+    votes (only if they're logged in)
     """
     if request.method == "POST":
         address_form = subscriptionAddressForm(request.POST)
@@ -52,6 +52,7 @@ def index(request):
                     )
             except stripe.error.CardError:
                 messages.error(request, "Your card was declined")
+                return redirect('index')
                 
             if customer.paid:
                 user_subscribed = UserProfile.objects.get(user=request.user)
@@ -61,9 +62,11 @@ def index(request):
                 return redirect('index')
             else:
                 messages.error(request, "Unable to take payment")
+                return redirect('index')
         else:
             print(card_form.errors)
             messages.error(request, "We were unable to take a payment with that card")
+            return redirect('index')
     else:
         if request.user.is_authenticated:
             user_subscribed = UserProfile.objects.get(user=request.user).subscribed
@@ -140,40 +143,46 @@ def register(request):
     return render(request, 'register.html', {"register_form": register_form})
 
 @csrf_exempt
-def profile(request, pk=None):
+def profile(request):
     """
     user can access own profile page.
     If user has created issues/features, the they will display on their profile page
     user can upload a profile image or change it
     """
-    if request.method == "POST":
-        picture_form = request.FILES.get('image')
-        profile = UserProfile.objects.get(user=request.user)
-        profile.image = picture_form
-        profile.save()
-        picture_name = picture_form.name
-        session = boto3.session.Session(aws_access_key_id=AWS_ACCESS_KEY_ID,
-                                        aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-        s3 = session.resource('s3')
-        s3.Bucket(AWS_STORAGE_BUCKET_NAME).put_object(Key=picture_name, Body=profile.image)
-        return redirect('profile')
+    try:
+        if request.method == "POST":
+            picture_form = request.FILES.get('image')
+            profile = UserProfile.objects.get(user=request.user)
+            profile.image = picture_form
+            profile.save()
+            picture_name = picture_form.name
+            session = boto3.session.Session(aws_access_key_id=AWS_ACCESS_KEY_ID,
+                                            aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+            s3 = session.resource('s3')
+            s3.Bucket(AWS_STORAGE_BUCKET_NAME).put_object(Key=picture_name, Body=profile.image)
+            return redirect('profile')
         
-    else:
+        else:
+            picture_form =  userProfileForm()
+    except:
         picture_form =  userProfileForm()
+        pass
         
     all_issues = Issue.objects.filter(author=request.user).order_by("-published_date")
     paginator = Paginator(all_issues, 2)
-    page = request.GET.get('page-issues')
-    # page = request.POST.get('page-issues')
+    # page = request.GET.get('page-issues')
+    page = request.POST.get('page-issues')
     print(page)
     try:
         all_issues = paginator.page(page)
         print(all_issues)
+        # import pdb; pdb.set_trace()
     except PageNotAnInteger:
         all_issues = paginator.page(1)
     except EmptyPage:
         all_issues = paginator.page(paginator.num_pages)
         paginator.page(paginator.num_pages) 
+        
     
     all_features = FeatureRequest.objects.filter(author=request.user).order_by("-published_date")
     paginator = Paginator(all_features, 2)
@@ -187,10 +196,39 @@ def profile(request, pk=None):
         all_features = paginator.page(paginator.num_pages)
         paginator.page(paginator.num_pages)
         
-    return render(request, "profile.html", {"all_issues": all_issues,
+    return render(request, "profile.html", {
+                                        "all_issues": all_issues,
                                         "all_features": all_features,
                                         "picture_form": picture_form,
                                         })
+
+# def pagination(request):
+#     all_issues = Issue.objects.filter(author=request.user).order_by("-published_date")
+#     paginator = Paginator(all_issues, 2)
+#     page = request.GET.get('page-issues')
+#     # page = request.POST.get('page-issues')
+#     print(page)
+#     try:
+#         all_issues = paginator.page(page)
+#         print(all_issues)
+#     except PageNotAnInteger:
+#         all_issues = paginator.page(1)
+#     except EmptyPage:
+#         all_issues = paginator.page(paginator.num_pages)
+#         paginator.page(paginator.num_pages) 
+    
+#     all_features = FeatureRequest.objects.filter(author=request.user).order_by("-published_date")
+#     paginator = Paginator(all_features, 2)
+#     page = request.GET.get('page-features')
+#     try:
+#         all_features= paginator.page(page)
+#         print(all_issues)
+#     except PageNotAnInteger:
+#         all_features = paginator.page(1)
+#     except EmptyPage:
+#         all_features = paginator.page(paginator.num_pages)
+#         paginator.page(paginator.num_pages)
+#         return redirect('profile')
 
 def remove_profile_img(request):
     """

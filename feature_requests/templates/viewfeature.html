@@ -11,7 +11,7 @@ $(document).ready(function(){
         $('#myInput').focus();
     });
     $('.done-btn').click(function(e){
-        e.preventDefault()
+        e.preventDefault();
         var this_ = $(this)
         this_.toggleClass("glyphicon glyphicon-ok");
         this_.text(function(i, text) {
@@ -37,10 +37,6 @@ $(document).ready(function(){
         var vote = parseInt($(".vote-count").attr("data-votes"), 10);
         var voteClicked = $(this).hasClass("voted");
         var featureId = window.location.pathname.split("/feature-requests/")[1].split("/")[0];
-        var checkoutUrl = "";
-        // var featureUrl = window.location.pathname;
-        // var featureIdUrl = "";
-        // var csrfToken = document.cookie.split(";")[1].split("csrftoken=")[1];
         $.ajax({
             url: voteUrl,
             method: "POST",
@@ -64,8 +60,6 @@ $(document).ready(function(){
                 console.log(xhr.status);
                 console.log(featureId);
                 window.location.href = "/checkout/" + featureId;
-                // $.post(checkoutUrl, {"feature_id": featureId}, function(data) {
-                // });
             }
             
         });
