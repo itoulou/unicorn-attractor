@@ -21,7 +21,7 @@ def get_all_features(request):
     template
     """ 
     all_features = FeatureRequest.objects.filter(published_date__lte=timezone.now()).order_by("-total_votes")
-    paginator = Paginator(all_features, 2)
+    paginator = Paginator(all_features, 9)
     page = request.GET.get('page-features')
     try:
         all_features = paginator.page(page)

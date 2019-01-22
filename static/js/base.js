@@ -1,14 +1,27 @@
 $(document).ready(function(){
+     var sideNav = $("#side-nav");
     $(".side-nav-btn").click(function(e){
         e.stopPropagation();
-        $("#side-nav").removeClass("remove");
-        $("#side-nav").animate({"width": "50%"}, 750);
+        sideNav.css({"display": ""});
+        sideNav.removeClass("remove-side-nav");
+        sideNav.animate({"width": "70%"}, 300);
     });
-    $("#side-nav").click(function(e){
+    sideNav.click(function(e){
         e.stopPropagation(); 
+        sideNav.removeClass("remove-side-nav");
     });
     $('body, html').click(function(e){
-        $("#side-nav").animate({"width": "-50%"}, 750);
+        sideNav.animate({"width": "-70%"}, 300);
+        setTimeout(function() {
+             sideNav.addClass("remove-side-nav");
+        }, 400);
     });
     $('[data-toggle="tooltip"]').tooltip();
+    $('.dropdown').on('show.bs.dropdown', function() {
+        $(this).find('.dropdown-menu').first().stop(true, true).slideDown();
+    });
+      
+    $('.dropdown').on('hide.bs.dropdown', function() {
+        $(this).find('.dropdown-menu').first().stop(true, true).slideUp();
+    });
 });

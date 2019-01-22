@@ -1,0 +1,95 @@
+.view-issue-content {
+    padding-right: 3%;
+}
+
+.view-issue-done-icon {
+    top: 75px;
+}
+
+.view-issue-votes {
+    padding-right: 0;
+    height: 250px;
+}
+
+.view-issue-votes form h3,
+.view-issue-done-icon{
+    position: relative;
+    top: 75px;
+}
+    
+     {% elif feature.done %}
+        <div class="text-right">
+            <i class="glyphicon glyphicon-ok view-issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this feature says the feature has been fixed"></i>
+        </div>    
+        {% else %}
+        <div class="text-right">
+            <i class="glyphicon glyphicon-time view-issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="Unicorn is currently working on this feature"></i>
+        </div> 
+        {% endif %}
+    
+    
+<script>
+$(document).ready(function(){
+    $(".delete-feature").click(function(){
+       return confirm("Are sure you want to delete your feature?"); 
+    });
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').focus();
+    });
+    $('.done-btn').click(function(e){
+        e.preventDefault();
+        var this_ = $(this)
+        this_.toggleClass("glyphicon glyphicon-ok");
+        this_.text(function(i, text) {
+           return text === 'Done' ? '' : 'Done';
+        });
+        var done_url = "{% url 'feature-done' feature.id %}";
+        var buttonHasIcon = this_.hasClass("glyphicon glyphicon-ok");
+        if (buttonHasIcon){
+            $.post(done_url, {"is_done": true}, function(data){
+            });
+            
+        } else {
+            $.post(done_url, {"is_done": false}, function(data){
+            });
+        }   
+    });
+    function updateVotes(tag, votes){
+        tag.text(votes);
+    }
+    $(".vote-btn").click(function(e){
+        $(this).toggleClass("voted");
+        var voteUrl = "{% url 'feature-vote' feature.id %}";
+        var vote = parseInt($(".vote-count").attr("data-votes"), 10);
+        var voteClicked = $(this).hasClass("voted");
+        var featureId = window.location.pathname.split("/feature-requests/")[1].split("/")[0];
+        $.ajax({
+            url: voteUrl,
+            method: "POST",
+            dataType: 'json',
+            success: function(data){
+                console.log(data);
+              if (voteClicked){
+                  console.log(data.up_vote);
+                  vote = data.vote_number;
+                  console.log("newVote " + vote);
+                  updateVotes($(".vote-count"), vote);
+              } else {
+                  console.log(data.up_vote);
+                  vote = data.vote_number;
+                  console.log("original vote " + vote);
+                  updateVotes($(".vote-count"), vote);
+              } 
+              
+            },
+            error: function(xhr, status, errorThrown){
+                console.log(xhr.status);
+                console.log(featureId);
+                window.location.href = "/checkout/" + featureId;
+            }
+            
+        });
+        e.preventDefault();
+    });
+});
+</script>    

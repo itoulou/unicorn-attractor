@@ -19,7 +19,8 @@ def get_all_issues(request):
     template
     """ 
     all_issues = Issue.objects.filter(published_date__lte=timezone.now()).order_by("-total_votes")
-    paginator = Paginator(all_issues, 2)
+    comments = Comment.objects.filter()
+    paginator = Paginator(all_issues, 9)
     page = request.GET.get('page-issues')
     try:
         all_issues = paginator.page(page)
@@ -29,7 +30,7 @@ def get_all_issues(request):
         all_issues = paginator.page(paginator.num_pages)
     paginator.page(paginator.num_pages)  
     return render(request, "issues.html", {"all_issues": all_issues,
-                                        #   "comments": comments,
+                                           "comments": comments,
                                         #   "comment_count": comment_count,
                                             })
 

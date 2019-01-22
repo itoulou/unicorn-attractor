@@ -19,12 +19,22 @@
     <div class="col-xs-12">
         <form role="form" method="POST" id="payment-form" action="{% url 'single_payment_checkout' pk %}">
             {% csrf_token %}
-            {{ address_form | as_bootstrap }}
-            <br>
-            <hr>
-            <br>
-            {{ card_form | as_bootstrap  }}
-            <button class="btn btn-default" type="submit">Pay</button>
+            <h3><i class="fa fa-gbp" aria-hidden="true"></i> 5.99</h3>
+            <div class="col-md-6">
+                {{ address_form | as_bootstrap }}
+            </div>
+            <div class="col-xs-12 hidden-md hidden-lg">
+                <br>
+                <hr>
+                <br>
+            </div>
+            <div class="col-md-6">
+                {{ card_form | as_bootstrap  }}
+                <button class="login-register-btn" type="submit">Pay</button>
+                <div class="text-center want-to-subscribe">
+                    <p>Want to <a href="{% url 'index' %}">subscribe </a>?</p>
+                </div>
+            </div>
         </form>
     </div>
 </div>

@@ -3,26 +3,31 @@
 {% block content %}
 {% if user.is_authenticated %}
 <div class="row">
-    <div class="col-md-6 text-left display">
+    <div class="col-xs-12 col-md-6 text-left display reset-password-table search-form">
         <form action="{% url 'search-features' %}" method="GET">
-            <input type="text" name="feature-search">
-            <button class="btn btn-default" type="submit">Search</button>
+            <i class="fa fa-search search-icon" aria-hidden="true"></i>
+            <input class="search-input" type="text" name="feature-search" placeholder="Search features">
+            <button class="search-btn" type="submit">Search</button>
         </form>
     </div>
-    <div class="col-md-6 text-right">
-        <a href="{% url 'create_feature' %}" class="btn btn-default">Create Request</a>
+    <div class="col-xs-12 col-md-6 text-center create-i-f-btn-div">
+        <a href="{% url 'create_feature' %}" class="">
+            <i class="fa fa-plus" aria-hidden="true" style="margin-right: 15px;"></i>
+            Create Request
+        </a>
     </div>
 </div>
 {% if messages %}
     {% for message in messages %}
     <div class="row">
-        <div class="col-xs-12 text-center">
+        <div class="col-xs-12 text-center" style="margin-top: 3%; background-color: #9c2323; color: #fafafa;">
             {{ message }}
         </div>
     </div>
     {% endfor %}
 {% endif %}
 {% endif %}
+<div class="issues-features-container">
 {% for feature in all_features %}
 <div class="row issue">
     <div class="col-xs-12 col-md-offset-3 col-md-6 main-issue-table">
@@ -31,24 +36,32 @@
                 <h3>{{ feature.vote.count }}</h3>
             </div>
         </div>
-        <div class="row table-items">
-            <div class="col-xs-12 col-md-11 text-left table hidden-md hidden-lg">
-                <div class="col-xs-3">
-                    {% if feature.done %}
-                    <i class="glyphicon glyphicon-ok issue-done-icon"></i>
-                    {% else %}
-                    <i class="glyphicon glyphicon-time issue-done-icon"></i>
-                    {% endif %}
+        <div class="row table-items ">
+            <div class="col-xs-12 hidden-md hidden-lg">
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <h3>{{ feature.title.capitalize | truncatewords:4 }}</h3>
+                    </div>
                 </div>
-                <div class="col-xs-6">
-                    <h3><a href="{% url 'view_feature' feature.id %}">{{ feature.title.capitalize | truncatewords:10 }}</a></h3>
+                <div class="row mobile-v-d-c-row">
+                    <div class="col-xs-4 text-center">
+                        <p>{{ feature.vote.count }} vote{{ feature.vote.count | pluralize }}</p>
+                    </div>
+                    <div class="col-xs-4 text-center mobile-done-div">
+                        {% if feature.done %}
+                        <i class="glyphicon glyphicon-ok "></i> {% else %}
+                        <i class="glyphicon glyphicon-time"></i> {% endif %}
+                    </div>
+                    <div class="col-xs-4 text-center">
+                        <p>{{ feature.comment_number }} comment{{ feature.comment_number | pluralize }}</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-11 text-left table hidden-xs hidden-sm">
-                <div class="col-xs-6">
-                    <h3><a href="{% url 'view_feature' feature.id %}">{{ feature.title.capitalize | truncatewords:10 }}</a></h3>
+            <div class="col-xs-12 text-left table hidden-xs hidden-sm">
+                <div class="col-xs-8">
+                    <h3><a href="{% url 'view_feature' feature.id %}">{{ feature.title.capitalize | truncatewords:6 }}</a></h3>
                 </div>
-                <div class="col-xs-6 text-right">
+                <div class="col-xs-4 text-right">
                     {% if feature.done %}
                     <i class="glyphicon glyphicon-ok issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this feature says the feature has been fixed"></i>
                     {% else %}
@@ -58,21 +71,23 @@
             </div>
         </div>
         <div class="row table-items">
-            <div class="col-xs-12 col-md-11 table content">
-                <pre>{{ feature.content | truncatewords:100 }}</pre>
+            <div class="col-xs-12 col-md-11 table content hidden-xs hidden-sm">
+                <pre>{{ feature.content | truncatewords:200 }}</pre>
             </div>
         </div>
     </div>
     <div class="row comments-row hidden-xs hidden-sm">
-        <div class="col-md-6 comment-number-div">
+        <div class="col-md-12 comment-number-view-btn-div">
+            <div class="col-md-6 text-left">
             {% if feature.comment_number > 0 %}
             <h5>{{ feature.comment_number }} comment{{ feature.comment_number | pluralize }}</h5>
             {% else %}
             <h5><a href="{% url 'view_feature' feature.id %}">Be the first to comment</a></h5>
             {% endif %}
-        </div>
-        <div class="col-md-6 text-right view-issue-btn-div">
+            </div>
+            <div class="col-md-6 text-right">
             <a href="{% url 'view_feature' feature.id %}" class="btn btn-default view-issue-btn">View feature</a>
+            </div>        
         </div>
     </div>
     <div class="row hidden-md hidden-lg">
@@ -88,17 +103,17 @@
     <div class="col-xs-12 text-center">
         <div class="pagination">
             <span class="step-links">
-                {% if all_features.has_previous %}
-                    <a href="?page-features={{ all_features.previous_page_number }}">previous</a>
-                {% endif %}
-                <span class="current">
-                    Page {{ all_features.number }} of {{ all_features.paginator.num_pages }}.
-                </span>
-                {% if all_features.has_next %}
-                    <a href="?page-features={{ all_features.next_page_number }}">next</a>
-                {% endif %}    
+            {% if all_features.has_previous %}
+                <a href="?page-features={{ all_features.previous_page_number }}" class="previous-page">previous</a>
+            {% endif %}
+            <span class="current">
+                Page <span class="page-number">{{ all_features.number }}</span> of {{ all_features.paginator.num_pages }}.
+            </span>
+            {% if all_features.has_next %}
+                <a href="?page-features={{ all_features.next_page_number }}" class="next-page">next</a> {% endif %}
             </span>
         </div>
     </div>
+</div>
 </div>
 {% endblock %}

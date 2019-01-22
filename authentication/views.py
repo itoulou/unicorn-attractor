@@ -3,9 +3,11 @@ from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core import serializers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django.http import JsonResponse
 import stripe
 
 from authentication.models import UserProfile
@@ -166,17 +168,15 @@ def profile(request):
             picture_form =  userProfileForm()
     except:
         picture_form =  userProfileForm()
-        pass
         
     all_issues = Issue.objects.filter(author=request.user).order_by("-published_date")
-    paginator = Paginator(all_issues, 2)
-    # page = request.GET.get('page-issues')
-    page = request.POST.get('page-issues')
+    issues_no_pages = Issue.objects.filter(author=request.user).order_by("-published_date")
+    my_features_clicked = False
+    paginator = Paginator(all_issues, 3)
+    page = request.GET.get('page-issues')
     print(page)
     try:
         all_issues = paginator.page(page)
-        print(all_issues)
-        # import pdb; pdb.set_trace()
     except PageNotAnInteger:
         all_issues = paginator.page(1)
     except EmptyPage:
@@ -185,51 +185,15 @@ def profile(request):
         
     
     all_features = FeatureRequest.objects.filter(author=request.user).order_by("-published_date")
-    paginator = Paginator(all_features, 2)
-    page = request.GET.get('page-features')
-    try:
-        all_features= paginator.page(page)
-        print(all_issues)
-    except PageNotAnInteger:
-        all_features = paginator.page(1)
-    except EmptyPage:
-        all_features = paginator.page(paginator.num_pages)
-        paginator.page(paginator.num_pages)
-        
+    features_no_pages = FeatureRequest.objects.filter(author=request.user).order_by("-published_date")
     return render(request, "profile.html", {
                                         "all_issues": all_issues,
                                         "all_features": all_features,
+                                        "issues": issues_no_pages,
+                                        "features": features_no_pages,
                                         "picture_form": picture_form,
+                                        "my_features_clicked": my_features_clicked,
                                         })
-
-# def pagination(request):
-#     all_issues = Issue.objects.filter(author=request.user).order_by("-published_date")
-#     paginator = Paginator(all_issues, 2)
-#     page = request.GET.get('page-issues')
-#     # page = request.POST.get('page-issues')
-#     print(page)
-#     try:
-#         all_issues = paginator.page(page)
-#         print(all_issues)
-#     except PageNotAnInteger:
-#         all_issues = paginator.page(1)
-#     except EmptyPage:
-#         all_issues = paginator.page(paginator.num_pages)
-#         paginator.page(paginator.num_pages) 
-    
-#     all_features = FeatureRequest.objects.filter(author=request.user).order_by("-published_date")
-#     paginator = Paginator(all_features, 2)
-#     page = request.GET.get('page-features')
-#     try:
-#         all_features= paginator.page(page)
-#         print(all_issues)
-#     except PageNotAnInteger:
-#         all_features = paginator.page(1)
-#     except EmptyPage:
-#         all_features = paginator.page(paginator.num_pages)
-#         paginator.page(paginator.num_pages)
-#         return redirect('profile')
-
 def remove_profile_img(request):
     """
     if user wishes to remove their image all together
@@ -251,3 +215,26 @@ def cancel_subscription(request):
         user_subscribed.subscribed = False
         user_subscribed.save()
     return redirect(reverse('index'))
+
+def user_features(request):
+    """
+    function that renders same page as profile function just with
+    user's features rendered as opposed to the issues
+    """
+    all_features = FeatureRequest.objects.filter(author=request.user).order_by("-published_date")
+    picture_form = userProfileForm()
+    my_features_clicked = True
+    paginator = Paginator(all_features, 3)
+    page = request.GET.get('page-features')
+    try:
+        all_features= paginator.page(page)
+    except PageNotAnInteger:
+        all_features = paginator.page(1)
+    except EmptyPage:
+        all_features = paginator.page(paginator.num_pages)
+        paginator.page(paginator.num_pages)
+    return render(request, "profile.html", {
+                                        "all_features": all_features,
+                                        "picture_form": picture_form,
+                                        "my_features_clicked": my_features_clicked,
+                                        })    

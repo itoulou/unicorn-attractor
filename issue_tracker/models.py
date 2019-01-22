@@ -31,7 +31,7 @@ class Comment(models.Model):
     issue = models.ForeignKey(Issue)
     user_logged_in = models.ForeignKey('auth.User', null=True, blank=False)
     image = models.ImageField(null=True, blank=True)
-    content = models.TextField(max_length=100, null=True, blank=False)
+    content = models.TextField(max_length=500, null=True, blank=False)
     created_date = models.DateTimeField(auto_now_add=True)
     published_date = models.DateTimeField(blank=True, null=True, default=timezone.now())
     tag = models.CharField(max_length=30, blank=True, null=True)

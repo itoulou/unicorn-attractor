@@ -12,37 +12,84 @@
 <script type="text/javascript" src="{% static 'js/stripe.js' %}"></script>
 {% endblock %}
 {% block content %}
-<h1>Home</h1>
-{% if messages %}
-<div>
-    {% for message in messages %}
-    {{ message }}
-    {% endfor %}
+<div class="row">
+    <div class="col-xs-12 text-center jumbotron index-jumbotron">
+      <h3>Welcome {% if user.is_authenticated %}{{ user.username.title }}{% endif %} to </h3>
+      <h1>Unicorn Attractor</h1>
+    </div>
 </div>
-{% endif %}
+<div class="row">
+  <div class="col-xs-12 text-center index-message">
+  {% if messages %}
+  {% for message in messages %}
+    <p>{{ message }}</p>
+  {% endfor %}
+  {% endif %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12 text-center">
+    {% if user_subscribed == False and not user.is_authenticated %}
+    <p class="index-p-logout">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque quos, amet iste explicabo mollitia, minus.</p>
+    {% elif user_subscribed == False %}
+    <p class="index-p-one">Welcome to Unicorn Attractor where you can post issues or feature requests. 
+                           All issue votes are free but if you wish to vote for a new feature, the price is £5.99 per vote.
+                          Otherwise feel free to subscribe and pay a monthly subscription of only £13.99 and vote to your heart's content.</p>
+    {% else %}
+    <p class="index-p-one-subscribed">Thank you for subscribing! You may now go and vote freely.</p>
+    {% endif %}
+  </div>
+</div>
 {% if logged_in %}
 <div class="row">
-    <div class="col-xs-12">
-        {% if user_subscribed == False %}
-        <a class="btn btn-default subscribe-btn" data-toggle="modal" data-target="#subscribe">Subscribe</a>
-        {% else %}
-        <a class="btn btn-default subscribe-btn" data-toggle="modal" data-target="#unsubscribe"><i class="glyphicon glyphicon-ok"style="margin-right: 3px;"></i><span class="subscribed"> Unubscribe</span></a>
-        {% endif %}
-      
-      <div class="modal fade" id="subscribe" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="col-xs-12 text-center subscribe-btn-row">
+      {% if user_subscribed == False %}
+      <a class="subscribe-btn" data-toggle="modal" data-target="#subscribe"><i class="fa fa-check subscribe-icon"></i>Subscribe</a>
+      {% else %}
+      <a class="unsubscribe-btn" data-toggle="modal" data-target="#unsubscribe"><i class="glyphicon glyphicon-ok"style="margin-right: 3px;"></i><span class="subscribed"> Unubscribe</span></a>
+      {% endif %}
+    </div>
+</div>
+{% endif %}
+<div class="row">
+  <div class="col-xs-12 text-center">
+    <p class="index-p-two">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+        Rem excepturi assumenda ut totam blanditiis, harum repudiandae, sint ex error, saepe delectus?
+        Repellendus doloremque dolore quam, aliquam unde.
+        Porro illo dicta suscipit excepturi a nulla ex!</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12 text-center">
+    <p class="index-p-two">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+    Incidunt unde est hic deserunt nobis explicabo odit non fugit quia consectetur!</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12 text-center">
+    <p class="index-p-two">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+    Quaerat, culpa. Nam inventore, consequuntur quaerat facilis, doloremque soluta, doloribus aut numquam accusantium velit animi nostrum nulla repudiandae.
+    Quidem voluptates molestias ea laborum possimus neque corporis excepturi.
+    Fuga, aliquid est tempore molestiae.</p>
+  </div>
+</div>
+<div class="modal fade" id="subscribe" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header address-form-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title" id="myModalLabel" style="display:inline-block;">Enter your billing address</h4>
               <i class="glyphicon glyphicon-home"></i>
+              <div>
+              <i class="fa fa-gbp" aria-hidden="true"></i><p style="display: inline;"> 13.99 per month</p>
+              </div>
             </div>
             <div class="modal-body">
               <form role="form" method="POST" id="payment-form" action="{% url 'index' %}">
                   {% csrf_token %}
                   {{ address_form | as_bootstrap }}
                   <br>
-                  <div class="modal-header">
+                  <div class="modal-header" id="card-form-header">
                     <h4 class="modal-title" id="myModalLabel" style="display:inline-block;">Enter your card details</h4>
                     <i class="glyphicon glyphicon-credit-card"></i>
                   </div>
@@ -50,8 +97,8 @@
                   {{ card_form | as_bootstrap }}
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Subscribe</button>
+              <button type="button" class="modal-cancel-btn" data-dismiss="modal">Close</button>
+              <button type="submit" class="subscribe-btn subscribe-form-btn">Subscribe</button>
               </form>
             </div>
           </div>
@@ -65,16 +112,13 @@
               <h4 class="modal-title" id="myModalLabel" style="display:inline-block;">Are you sure want to cancel your subscription?</h4>
             </div>
             <div class="modal-footer">
-              <form action="{% url 'cancel_subscription' %}" method="POST">
+              <form action="{% url 'cancel_subscription' %}" method="POST" id="unsubscribe-form">
                 {% csrf_token %}
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Cancel subscription</button>
+              <button type="button" class="modal-cancel-btn" data-dismiss="modal">Close</button>
+              <button type="submit" class="unsubscribe-btn">Cancel subscription</button>
               </form>
             </div>
           </div>
         </div>
       </div>
-    </div>
-</div>
-{% endif %}
 {% endblock %}

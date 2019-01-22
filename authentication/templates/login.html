@@ -2,13 +2,17 @@
 {% load bootstrap_tags %}
 {% block title %}Login{% endblock %}
 {% block content %}
-<form method="POST">
-    {% csrf_token %}
-    {{ login_form | as_bootstrap }}
-    <button type="submit" class="btn btn-default">Login</button>
-    <p class=""><a href="{% url 'password_reset' %}">Forgotten your password?</a></p>
-    <p class="">Not registered yet? <a href="{% url 'register' %}">Sign up</a> here</p>
-</form>
+<div class="row">
+    <div class="col-xs-12 login-form">
+        <form method="POST">
+            {% csrf_token %}
+            {{ login_form | as_bootstrap }}
+            <button type="submit" class="login-register-btn">Login</button>
+            <p class=""><a href="{% url 'password_reset' %}">Forgotten your password?</a></p>
+            <p class="sign-up-p">Not registered yet? <span class="sign-up-span"><a href="{% url 'register' %}">Sign up</a></span> here</p>
+        </form>
+    </div>
+</div>
 {% if messages %}
     <div>
     {% for message in messages %}

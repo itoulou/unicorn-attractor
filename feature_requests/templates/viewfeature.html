@@ -14,10 +14,11 @@ $(document).ready(function(){
         e.preventDefault();
         var this_ = $(this)
         this_.toggleClass("glyphicon glyphicon-ok");
+        this_.toggleClass("done-btn-clicked done-btn-not-clicked")
         this_.text(function(i, text) {
            return text === 'Done' ? '' : 'Done';
         });
-        var done_url = "{% url 'feature-done' feature.id %}";
+        var done_url = "{% url 'done' feature.id %}";
         var buttonHasIcon = this_.hasClass("glyphicon glyphicon-ok");
         if (buttonHasIcon){
             $.post(done_url, {"is_done": true}, function(data){
@@ -32,7 +33,8 @@ $(document).ready(function(){
         tag.text(votes);
     }
     $(".vote-btn").click(function(e){
-        $(this).toggleClass("voted");
+    e.preventDefault();
+    $(this).toggleClass("voted unvoted");
         var voteUrl = "{% url 'feature-vote' feature.id %}";
         var vote = parseInt($(".vote-count").attr("data-votes"), 10);
         var voteClicked = $(this).hasClass("voted");
@@ -69,119 +71,193 @@ $(document).ready(function(){
 </script>
 {% endblock %}
 {% block content %}
-<div>
-    {% for message in messages %}
-    {{ message }}
-    {% endfor %}
-</div>
 <div class="row">
     {% for author_image in author_image %}
     {% if author_image.image.url != None %}
-    <div class="col-xs-12 col-md-3 author-image-row">
+    <div class="col-xs-12 col-sm-3 author-image-row">
         <img  class="author-image" src="{{ author_image.image.url }}" alt="" height="500px" width="500px">
     </div>
     {% else %}
-    <div class="col-xs-12 col-md-3 author-image-row">
+    <div class="col-xs-12 col-sm-3 author-image-row">
         <img class="author-image view-image view-issue-image" style="background: #eee;">
     </div>
     {% endif %}
     {% endfor %}
-    <div class="col-xs-12 col-md-9 text-center view-issue-author">
-        <h3>{{ feature.author }}</h3>
-    </div>
-    {% if feature.author == request.user %}
-    <div class="text-right">
-        <form action="" method="POST">
-        {% csrf_token %}
-        {% if feature.done == False %}
-        <button class="btn btn-default done-btn">Done</button>
-        {% else %}
-        <button class="btn btn-default done-btn glyphicon glyphicon-ok"></button>
-        {% endif %}
-        </form>
-    </div>
-    {% elif feature.done %}
-    <div class="text-right">
-        <i class="glyphicon glyphicon-ok view-issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this feature says the feature has been fixed"></i>
-    </div>    
-    {% else %}
-    <div class="text-right">
-        <i class="glyphicon glyphicon-time view-issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="Unicorn is currently working on this feature"></i>
-    </div> 
-    {% endif %}
-</div
-<br>
-<div class="row">
-    <div class="col-xs-12">
-        <h1>{{ feature.title }}</h1>
-    </div>
+    <div class="col-sm-9 view-issue-title-div hidden-xs">
+        <h1><strong>{{ feature.title }}</strong></h1>
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-6 text-center">
-        <p>{{ feature.tag }}</p>
-    </div>
-    <div class="col-xs-6 text-center">
-        <p>{{ feature.published_date }}</p>
+    <div class="col-xs-12 text-center view-issue-author">
+        <h3>by {{ feature.author }}</h3>
     </div>
 </div>
-<br>
-<div class="row view-issue-votes-content">
-    <div class="col-xs-3 text-center">
-        <!--<form action="{% url 'feature-vote' feature.id %}" method="POST">-->
+<div class="row view-issue-votes-row">
+    <div class="col-xs-6 text-center view-issue-votes hidden-sm hidden-md hidden-lg">
         <form>
         {% csrf_token %}
         {% if user in feature.vote.all %}
         <button class="glyphicon glyphicon-chevron-up vote-btn voted" name="vote-up"></button>
         {% else %}
-        <button class="glyphicon glyphicon-chevron-up vote-btn" name="vote-up"></button>
+        <button class="glyphicon glyphicon-chevron-up vote-btn unvoted" name="vote-up"></button>
         {% endif %}
         </form>
         <h3 class="vote-count" data-votes="{{ feature.vote.count }}">{{ feature.vote.count }}</h3>
     </div>
-    <div class="col-xs-9 view-issue-content">
+    <div class="col-xs-6 text-center hidden-sm hidden-md hidden-lg">
+        {% if feature.author == request.user %}
+            <form action="" method="POST">
+            {% csrf_token %}
+            {% if feature.done == False %}
+            <button class="btn btn-default done-btn done-btn-not-clicked">Done</button>
+            {% else %}
+            <button class="btn btn-default done-btn done-btn-clicked glyphicon glyphicon-ok"></button>
+            {% endif %}
+            </form>
+        {% elif feature.done %}
+        <div class="text-center">
+            <i class="glyphicon glyphicon-ok view-issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this feature says the feature has been fixed"></i>
+        </div>    
+        {% else %}
+        <div class="text-center">
+            <i class="glyphicon glyphicon-time view-issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="Unicorn is currently working on this feature"></i>
+        </div> 
+        {% endif %}
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-xs-12 view-issue-title-div hidden-sm hidden-md hidden-lg">
+        <h1><strong>{{ feature.title }}</strong></h1>
+    </div>
+</div>
+<div class="row tag-pub-date-row">
+    <div class="col-xs-6 text-center ">
+        <p>{{ feature.tag }}</p>
+    </div>
+    <div class="col-xs-6 text-center ">
+        <p>{{ feature.published_date }}</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 view-issue-content hidden-sm hidden-md hidden-lg">
         <pre>{{ feature.content }}</pre>
     </div>
 </div>
-{% if feature.author == request.user %}
 <div class="row">
-    <div class="col-xs-6">
-        <a href="{% url 'edit_feature' feature.id %}" class="btn btn-default">Edit feature</a>
+    <div class="col-sm-3">
+        <div class="row">
+            <div class="col-sm-12 text-center hidden-xs  view-issue-votes">
+                <form>
+                {% csrf_token %}
+                {% if user in feature.vote.all %}
+                <button class="glyphicon glyphicon-chevron-up vote-btn voted" name="vote-up"></button>
+                {% else %}
+                <button class="glyphicon glyphicon-chevron-up vote-btn unvoted" name="vote-up"></button>
+                {% endif %}
+                </form>
+                <h3 class="vote-count" data-votes="{{ feature.vote.count }}">{{ feature.vote.count }}</h3>
+            </div>
+        </div>   
+        <div class="row">
+            <div class="col-sm-12 text-center hidden-xs">
+                {% if feature.author == request.user %}
+                    <form action="" method="POST">
+                    {% csrf_token %}
+                    {% if feature.done == False %}
+                    <button class="btn btn-default done-btn done-btn-not-clicked">Done</button>
+                    {% else %}
+                    <button class="btn btn-default done-btn done-btn-clicked glyphicon glyphicon-ok"></button>
+                    {% endif %}
+                    </form>
+                {% elif feature.done %}
+                <div class="text-right">
+                    <i class="glyphicon glyphicon-ok view-issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this feature says the feature has been fixed"></i>
+                </div>    
+                {% else %}
+                <div class="text-right">
+                    <i class="glyphicon glyphicon-time view-issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="Unicorn is currently working on this feature"></i>
+                </div> 
+                {% endif %}
+            </div>
+        </div>    
     </div>
-     <div class="col-xs-6 text-right">
-        <a href="{% url 'delete_feature' feature.id %}" class="btn btn-default delete-feature">Delete feature</a>
+    <div class="col-sm-9 view-issue-content hidden-xs">
+        <pre>{{ feature.content }}</pre>
+    </div>
+</div>
+<br>
+
+{% if feature.author == request.user %}
+<div class="row edit-delete-issue-row ">
+    <div class="col-xs-6 text-center">
+        <a href="{% url 'edit_feature' feature.id %}" class="btn btn-default edit-issue">
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            Edit Feature
+        </a>
+    </div>
+     <div class="col-xs-6 text-center">
+        <a href="{% url 'delete_feature' feature.id %}" class="btn btn-default delete-issue">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+            Delete Feature
+        </a>
     </div>
 </div>
 {% endif %}
-<a href="" type="button" data-toggle="modal" data-target="#myModal">Add comment</a>
+<div class="row add-comment-row">
+    {% if comment_count > 3 %}
+    <div class="col-xs-6 text-center">
+        <a class="btn btn-default view-comments" href="" data-toggle="modal" data-target="#viewComments">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            View all comments
+        </a>
+    </div>
+    <div class="col-xs-6 text-center">
+        <a class="btn btn-default add-comment" href="" type="button" data-toggle="modal" data-target="#addComments">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            Add comment
+        </a>
+    </div>
+    {% else %}
+    <div class="col-xs-12 text-center">
+        <a class="btn btn-default add-comment" href="" type="button" data-toggle="modal" data-target="#addComments"><i class="fa fa-plus" aria-hidden="true"></i>Add comment</a>
+    </div>
+    {% endif %}
+</div>
+<div class="row view-issue-comment-number-row">
+    <div class="col-xs-12 text-center">
+        <p>{{ comment_count }} comment{{ comments_with_images | pluralize }}</p>
+    </div>
+</div>
+
+<!-- Button trigger modal -->
+
+
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="addComments" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Write a comment</h4>
       </div>
-      <div class="modal-body">
+      <div class="modal-body comment-form">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ comment_form | as_bootstrap }}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save comment</button>
+        <button type="button" class="modal-cancel-btn" data-dismiss="modal">Close</button>
+        <button type="submit" class="unsubscribe-btn">Save comment</button>
         </form>
       </div>
     </div>
   </div>
 </div>
-{{ comment_count }} comment{{ comments_with_images | pluralize }}
-{% if comment_count > 3 %}
-<!-- Button trigger modal -->
-<a href="" data-toggle="modal" data-target="#myModalComments">View all comments</a>
-{% endif %}
+
+
 <!-- Modal -->
-<div class="modal fade" id="myModalComments" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="viewComments" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -190,48 +266,61 @@ $(document).ready(function(){
       </div>
       <div class="modal-body modal-body-all-comments">
         {% for comment in comments_with_images %}
-        <div class="row">
-            <p class="comment-date-modal hidden-xs">{{ comment.comment.created_date }}</p>
-            <div class="comment-image-div">
+        <div class="col-xs-12">
+            <div class="col-xs-3 comment-image-div">
                 {% if comment.image.url != None %}
                 <img class="comment-image" src="{{ comment.image.url }}" alt="" style="width: 5rem; height: 5rem; border-radius: 50%;">
                 {% else %}
                 <div style="background-color: #eee; width: 5rem; height: 5rem; border-radius: 50%;"></div>
                 {% endif %}
             </div>
-            <blockquote>
-                <p>{{ comment.comment.content }}</p>
-                <footer>by <cite title="Source Title">{{ comment.comment.user_logged_in }}</cite></footer>
-                <p class="comment-date hidden-sm hidden-md hidden-lg">{{ comment.comment.created_date }}</p>
-            </blockquote>
+            <div class="col-xs-9 comment-blockquote-div">
+                <blockquote class="comment-blockquote">
+                    <pre>{{ comment.comment.content }}</pre>
+                    <footer>by <cite title="Source Title">{{ comment.comment.user_logged_in }}</cite></footer>
+                    <p class="comment-date">{{ comment.comment.created_date }}</p>
+                </blockquote>
+            </div>
         </div>
         {% endfor %}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="modal-cancel-btn" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 {% for comment in first_three_comments %}
 <div class="row">
-    <div class="comment-image-div">
-        {% if comment.image.url != None %}
-        <img class="comment-image" src="{{ comment.image.url }}" alt="" style="width: 5rem; height: 5rem; border-radius: 50%;">
-        {% else %}
-        <div style="background-color: #eee; width: 5rem; height: 5rem; border-radius: 50%;"></div>
-        {% endif %}
+    <div class="col-xs-12 col-lg-6">
+        <div class="col-xs-3 comment-image-div">
+            {% if comment.image.url != None %}
+            <img class="comment-image" src="{{ comment.image.url }}" alt="" style="width: 5rem; height: 5rem; border-radius: 50%;">
+            {% else %}
+            <div style="background-color: #eee; width: 5rem; height: 5rem; border-radius: 50%;"></div>
+            {% endif %}
+        </div>
+        <div class="col-xs-9 comment-blockquote-div">
+            <blockquote class="comment-blockquote">
+                <pre>{{ comment.comment.content }}</pre>
+                <footer>by <cite title="Source Title">{{ comment.comment.user_logged_in }}</cite></footer>
+                <p class="comment-date">{{ comment.comment.created_date }}</p>
+            </blockquote>
+        </div>
     </div>
-    <blockquote>
-        <p>{{ comment.comment.content }}</p>
-        <footer>by <cite title="Source Title">{{ comment.comment.user_logged_in }}</cite></footer>
-        <p class="comment-date">{{ comment.comment.created_date }}</p>
-    </blockquote>
 </div>
 {% endfor %}
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-xs-12 text-center hidden-xs hidden-sm back-btn"> 
         <a href="{% url 'all_features' %}" class="btn btn-default">Back</a>
     </div>
 </div>
 {% endblock %}
+
+
+
+
+
+
+
+
