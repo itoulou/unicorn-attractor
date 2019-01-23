@@ -803,9 +803,7 @@ form {
     display: block;
 }
 
-.no-issues-features-row {
-    margin-right: 25%;
-}
+
 
 .no-issues-features-lg h3 {
     font-size: 35px;
@@ -1606,6 +1604,10 @@ blockquote {
     
     .next-page, .previous-page  {
         color: #363636;
+    }
+    
+    .no-issues-features-row {
+        margin-right: 25%;
     }
 
 
