@@ -28,92 +28,100 @@
 {% endif %}
 {% endif %}
 <div class="issues-features-container">
-{% for issue in all_issues %}
-<div class="row issue">
-    <div class="col-xs-12 col-md-offset-3 col-md-6 main-issue-table">
-        <div class="col-xs-12 col-md-1 text-center votes hidden-xs hidden-sm">
-            <div class="votes-chevron">
-                <h3>{{ issue.vote.count }}</h3>
+    {% if all_issues %}
+    {% for issue in all_issues %}
+    <div class="row issue">
+        <div class="col-xs-12 col-md-offset-3 col-md-6 main-issue-table">
+            <div class="col-xs-12 col-md-1 text-center votes hidden-xs hidden-sm">
+                <div class="votes-chevron">
+                    <h3>{{ issue.vote.count }}</h3>
+                </div>
             </div>
-        </div>
-        <div class="row table-items ">
-            <div class="col-xs-12 hidden-md hidden-lg">
-                <div class="row">
-                    <div class="col-xs-12 text-center">
-                        <h3>{{ issue.title.capitalize | truncatewords:4 }}</h3>
+            <div class="row table-items ">
+                <div class="col-xs-12 hidden-md hidden-lg">
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <h3>{{ issue.title.capitalize | truncatewords:4 }}</h3>
+                        </div>
+                    </div>
+                    <div class="row mobile-v-d-c-row">
+                        <div class="col-xs-4 text-center">
+                            <p>{{ issue.vote.count }} vote{{ issue.vote.count | pluralize }}</p>
+                        </div>
+                        <div class="col-xs-4 text-center mobile-done-div">
+                            {% if issue.done %}
+                            <i class="glyphicon glyphicon-ok "></i> {% else %}
+                            <i class="glyphicon glyphicon-time"></i> {% endif %}
+                        </div>
+                        <div class="col-xs-4 text-center">
+                            <p>{{ issue.comment_number }} comment{{ issue.comment_number | pluralize }}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="row mobile-v-d-c-row">
-                    <div class="col-xs-4 text-center">
-                        <p>{{ issue.vote.count }} vote{{ issue.vote.count | pluralize }}</p>
+                <div class="col-xs-12 text-left table hidden-xs hidden-sm">
+                    <div class="col-xs-8">
+                        <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title.capitalize | truncatewords:6 }}</a></h3>
                     </div>
-                    <div class="col-xs-4 text-center mobile-done-div">
+                    <div class="col-xs-4 text-right">
                         {% if issue.done %}
-                        <i class="glyphicon glyphicon-ok "></i> {% else %}
-                        <i class="glyphicon glyphicon-time"></i> {% endif %}
-                    </div>
-                    <div class="col-xs-4 text-center">
-                        <p>{{ issue.comment_number }} comment{{ issue.comment_number | pluralize }}</p>
+                        <i class="glyphicon glyphicon-ok issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this issue says the issue has been fixed"></i>
+                        {% else %}
+                        <i class="glyphicon glyphicon-time issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="Unicorn is currently working on this issue"></i>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 text-left table hidden-xs hidden-sm">
-                <div class="col-xs-8">
-                    <h3><a href="{% url 'view_issue' issue.id %}">{{ issue.title.capitalize | truncatewords:6 }}</a></h3>
-                </div>
-                <div class="col-xs-4 text-right">
-                    {% if issue.done %}
-                    <i class="glyphicon glyphicon-ok issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="The author of this issue says the issue has been fixed"></i>
-                    {% else %}
-                    <i class="glyphicon glyphicon-time issue-done-icon" data-toggle="tooltip" data-placement="bottom" title="Unicorn is currently working on this issue"></i>
-                    {% endif %}
+            <div class="row table-items">
+                <div class="col-xs-12 col-md-11 table content hidden-xs hidden-sm">
+                    <pre>{{ issue.content | truncatewords:200 }}</pre>
                 </div>
             </div>
         </div>
-        <div class="row table-items">
-            <div class="col-xs-12 col-md-11 table content hidden-xs hidden-sm">
-                <pre>{{ issue.content | truncatewords:200 }}</pre>
+        <div class="row comments-row hidden-xs hidden-sm">
+            <div class="col-md-12 comment-number-view-btn-div">
+                <div class="col-md-6 text-left">
+                {% if issue.comment_number > 0 %}
+                <h5>{{ issue.comment_number }} comment{{ issue.comment_number | pluralize }}</h5>
+                {% else %}
+                <h5><a href="{% url 'view_issue' issue.id %}">Be the first to comment</a></h5>
+                {% endif %}
+                </div>
+                <div class="col-md-6 text-right">
+                <a href="{% url 'view_issue' issue.id %}" class="btn btn-default view-issue-btn">View issue</a>
+                </div>        
+            </div>
+        </div>
+        <div class="row hidden-md hidden-lg">
+            <div class="col-xs-12">
+                <div class="text-center">
+                    <a href="{% url 'view_issue' issue.id %}" class="btn btn-default view-issue">View Issue</a>
+                </div>
             </div>
         </div>
     </div>
-    <div class="row comments-row hidden-xs hidden-sm">
-        <div class="col-md-12 comment-number-view-btn-div">
-            <div class="col-md-6 text-left">
-            {% if issue.comment_number > 0 %}
-            <h5>{{ issue.comment_number }} comment{{ issue.comment_number | pluralize }}</h5>
-            {% else %}
-            <h5><a href="{% url 'view_issue' issue.id %}">Be the first to comment</a></h5>
-            {% endif %}
+    {% endfor %}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <div class="pagination">
+                <span class="step-links">
+                {% if all_issues.has_previous %}
+                    <a href="?page-issues={{ all_issues.previous_page_number }}" class="previous-page">previous</a>
+                {% endif %}
+                <span class="current">
+                    Page <span class="page-number">{{ all_issues.number }}</span> of {{ all_issues.paginator.num_pages }}.
+                </span>
+                {% if all_issues.has_next %}
+                    <a href="?page-issues={{ all_issues.next_page_number }}" class="next-page">next</a> {% endif %}
+                </span>
             </div>
-            <div class="col-md-6 text-right">
-            <a href="{% url 'view_issue' issue.id %}" class="btn btn-default view-issue-btn">View issue</a>
-            </div>        
         </div>
     </div>
-    <div class="row hidden-md hidden-lg">
+    {% else %}
+    <div class="row">
         <div class="col-xs-12">
-            <div class="text-center">
-                <a href="{% url 'view_issue' issue.id %}" class="btn btn-default view-issue">View Issue</a>
-            </div>
+            <h1>Create the first ticket</h1>
         </div>
     </div>
-</div>
-{% endfor %}
-<div class="row">
-    <div class="col-xs-12 text-center">
-        <div class="pagination">
-            <span class="step-links">
-            {% if all_issues.has_previous %}
-                <a href="?page-issues={{ all_issues.previous_page_number }}" class="previous-page">previous</a>
-            {% endif %}
-            <span class="current">
-                Page <span class="page-number">{{ all_issues.number }}</span> of {{ all_issues.paginator.num_pages }}.
-            </span>
-            {% if all_issues.has_next %}
-                <a href="?page-issues={{ all_issues.next_page_number }}" class="next-page">next</a> {% endif %}
-            </span>
-        </div>
-    </div>
-</div>
+    {% endif %}
 </div>
 {% endblock %}

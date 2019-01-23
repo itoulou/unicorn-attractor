@@ -441,7 +441,7 @@ form {
 #card-form-header {
     padding: 0 !important;
     border-bottom: 1px solid #e5e5e5 !important;
-    margin: 0px -10%;
+    margin: 0px -15%;
 }
 
 #card-form-header i {
@@ -557,6 +557,7 @@ form {
     overflow-y: auto;
     height: 100%;
     margin-top: 90%;
+    overflow-x: hidden;
 }
 
 .my-i-f-list-top-row {
