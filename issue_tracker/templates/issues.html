@@ -83,7 +83,7 @@
                 {% if issue.comment_number > 0 %}
                 <h5>{{ issue.comment_number }} comment{{ issue.comment_number | pluralize }}</h5>
                 {% else %}
-                <h5><a href="{% url 'view_issue' issue.id %}">Be the first to comment</a></h5>
+                <h5><a href="{% url 'view_issue' issue.id %}#add-comment">Be the first to comment</a></h5>
                 {% endif %}
                 </div>
                 <div class="col-md-6 text-right">

@@ -199,14 +199,14 @@ $(document).ready(function(){
         </a>
     </div>
     <div class="col-xs-6 text-center">
-        <a class="btn btn-default add-comment" href="" type="button" data-toggle="modal" data-target="#addComments">
+        <a id="add-comment" class="btn btn-default add-comment" href="" type="button" data-toggle="modal" data-target="#addComments">
             <i class="fa fa-plus" aria-hidden="true"></i>
             Add comment
         </a>
     </div>
     {% else %}
     <div class="col-xs-12 text-center">
-        <a class="btn btn-default add-comment" href="" type="button" data-toggle="modal" data-target="#addComments"><i class="fa fa-plus" aria-hidden="true"></i>Add comment</a>
+        <a id="add-comment" class="btn btn-default add-comment" href="" type="button" data-toggle="modal" data-target="#addComments"><i class="fa fa-plus" aria-hidden="true"></i>Add comment</a>
     </div>
     {% endif %}
 </div>
