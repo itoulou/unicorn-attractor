@@ -141,7 +141,6 @@ def register(request):
                 messages.error(request, 'A problem occured, please try to register again')
     else:    
         register_form = registerForm()
-        # profile_picture_form = profilePictureForm()
     return render(request, 'register.html', {"register_form": register_form})
 
 @csrf_exempt
