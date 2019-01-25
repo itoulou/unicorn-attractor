@@ -45,6 +45,12 @@ body {
     font-family: geo-sans-light;
 }
 
+.error-msg {
+    background-color: #9c3232;
+    color: #fafafa;
+    padding: 0 2%;
+}
+
 .container-base {
     margin: 0;
 }
