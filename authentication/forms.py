@@ -29,6 +29,8 @@ class registerForm(UserCreationForm):
         If it is then return an error else return the email
         """
         email = self.cleaned_data.get('email')
+        if not email:
+            raise forms.ValidationError('Please enter an email address')
         username = self.cleaned_data.get('username')
         if User.objects.filter(email=email).exclude(username=username):
             raise forms.ValidationError(u'Email address is already in use')
