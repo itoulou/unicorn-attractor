@@ -54,16 +54,16 @@ def single_payment_checkout(request, pk):
                     return redirect('view_feature', pk)
                 else:
                     messages.error(request, "Unable to take payment")
-                    return redirect('view_feature', pk)
+                    return redirect('single_payment_checkout', pk)
             except stripe.error.CardError:
                 messages.error(request, "Your card was declined")
-                return redirect('view_feature', pk)
+                return redirect('single_payment_checkout', pk)
                 
             
         else:
             print(card_form.errors)
             messages.error(request, "We were unable to take a payment with that card")
-            return redirect('view_feature', pk)
+            return redirect('single_payment_checkout', pk)
     else:
         card_form = singlePaymentForm()
         address_form = singlePaymentAddressForm()
