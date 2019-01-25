@@ -114,6 +114,8 @@ nav ul {
 
 .navbar-list-lg a:focus {
     background-color: rgb(43, 42, 42) !important;
+    background-image: none !important;
+    outline: none;
 }
 
 .navbar-list-lg a:active {
@@ -253,6 +255,7 @@ form {
 
 .register-form {
     margin-top: 10%;
+    background-color: green;
 }
 
 .login-register-btn {
@@ -1183,6 +1186,7 @@ pre {
     color: #9c3232;
     font-size: 20px;
     border: none;
+    box-shadow: none;
 }
 
 .done-btn-clicked:active:focus, .done-btn-clicked:active:hover,
@@ -1391,7 +1395,10 @@ blockquote {
     .side-nav-btn {
         font-size: 25px;
     }
-
+    .side-nav-btn:focus {
+         outline: none;
+    }
+   
     .navbar-list a {
         font-size: 25px;
 
