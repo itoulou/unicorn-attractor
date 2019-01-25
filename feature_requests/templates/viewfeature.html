@@ -71,6 +71,15 @@ $(document).ready(function(){
 </script>
 {% endblock %}
 {% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="row">
+        <div class="col-xs-12 text-center" style="margin-top: 3%; background-color: #9c2323; color: #fafafa;">
+            {{ message }}
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
 <div class="row">
     {% for author_image in author_image %}
     {% if author_image.image.url != None %}
