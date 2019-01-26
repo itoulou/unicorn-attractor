@@ -154,7 +154,7 @@ on whether the user is subscribed or has already paid.__
 * [__Amazon Web Services (AWS)__](https://docs.aws.amazon.com/index.html#lang/en_us)
     * This project uses AWS (S3) as a means of storing media and static files. 
 * [__Stripe__](https://stripe.com/gb)
-    * This project uses Stripe as a payment service for users and all security checks are dealt with. 
+    * This project uses Stripe as a payment service for users and to ensure that all security checks are dealt with. 
 
 # Testing
 ### Login Form
