@@ -45,12 +45,6 @@ body {
     font-family: geo-sans-light;
 }
 
-.error-msg {
-    background-color: #9c3232;
-    color: #fafafa;
-    padding: 0 2%;
-}
-
 .container-base {
     margin: 0;
 }
@@ -255,6 +249,13 @@ form {
 
 .register-form {
     margin-top: 10%;
+}
+
+.error-msg {
+    background-color: #9c3232;
+    color: #fafafa;
+    padding: 0 2%;
+    border-radius: 2px;
 }
 
 .login-register-btn {
