@@ -1,5 +1,3 @@
-
-
 <h1><a href="https://unicorn-attractor-tou.herokuapp.com/" target="_blank">Unicorn Attractor</a></h1>
 
 The brief for this assignment was to produce an app which served my theoretical
@@ -19,11 +17,11 @@ where they can upload their own photos as a profile picture and all the issues
 and ideas which they've posted will show up on their page.
 
 This is also a social platform for users as they have the ability to comment
-on each other people's issues or features for free.
+on each other's issues or features for free.
 
 # UX
 
-The target audience for this application (app) is directed at all developers, from users who
+The target audience for this app is directed at all developers, from users who
 have little or no experience to advanced developers or who generally have
 any software related questions.  
 
@@ -160,7 +158,7 @@ on whether the user is subscribed or has already paid.__
 ### Login Form
 1. Go to 'Login' page.
 2. Try to submit the empty form and verify that an error message about the required fields appears.
-3. Try to submit the form with an invalid email address and verify that a relevant error message appears.
+3. Try to submit the form with an invalid username or email address and verify that a relevant error message appears.
 4. Try to submit the form with all inputs valid and verify you are redirected to the homepage where a success message appears.
 
 ### Register Form
