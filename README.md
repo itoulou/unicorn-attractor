@@ -41,6 +41,9 @@ as an author of an issue can display whether or not their issue has been fixed
 or their request has been developed by the touch of a button. You can also comment
 if you have any further questions or just want to chat.
 
+### Profile Page
+![profile image](/wireframes/images/profile-md-lg.png "profile md lg")
+
 # Features
 
 ### Base
