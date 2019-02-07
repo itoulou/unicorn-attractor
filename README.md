@@ -59,7 +59,7 @@ __xs/sm__
 
 ![all issues image](/wireframes/images/all-issues-xs-sm.png "all issues xs sm")
 
-### View Issues Page
+### View Issue Page
 __md/lg__
 
 ![view issue image](/wireframes/images/view-issue-md-lg.png "view issue md lg")
