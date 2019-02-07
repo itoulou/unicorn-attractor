@@ -42,7 +42,32 @@ or their request has been developed by the touch of a button. You can also comme
 if you have any further questions or just want to chat.
 
 ### Profile Page
+__md/lg__
+
 ![profile image](/wireframes/images/profile-md-lg.png "profile md lg")
+
+__xs/sm__
+
+![profile image](/wireframes/images/profile-xs-sm.png "profile xs sm")
+
+### All Issues Page
+__md/lg__
+
+![all issues image](/wireframes/images/all-issues-md-lg.png "all issues md lg")
+
+__xs/sm__
+
+![all issues image](/wireframes/images/all-issues-xs-sm.png "all issues xs sm")
+
+### View Issues Page
+__md/lg__
+
+![view issue image](/wireframes/images/view-issue-md-lg.png "view issue md lg")
+
+__xs/sm__
+
+![view issue image](/wireframes/images/view-issue-xs-sm.png "view issue xs sm")
+
 
 # Features
 
