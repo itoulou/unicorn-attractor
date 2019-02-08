@@ -126,14 +126,14 @@ by clicking on the buttons 'My issues' and 'My features'.
 
 * __View issue__ 
     * Any user can vote for the issue signalling that they have this issue
-    too by clikcing the chevron where the vote number will increase by 1 if toggled once
+    too by clicking the chevron where the vote number will increase by 1 if toggled once
     and decreased by 1 if toggled again.
     * The author of the user can display whether or not the issue has been fixed by clicking
     * the 'Done' button which will produce a red tick signalling that the issue has been fixed,
     letting other users know that they have the same issue, they can find the solution here.
     * Only the author of the issue can edit an issue. If they wish to do so then
     they can click 'Edit issue' where they will be redirected to a form similar to that of 'Create a Ticket'.
-    * Only the author can delete the issue if they wish by clikcing 'Delete issue'.
+    * Only the author can delete the issue if they wish by clicking 'Delete issue'.
     * Any user can comment if they wish by clicking 'Add comment' by a which a modal will
     appear where they would fill out a form with their comment content. This comment
     will be displayed on the viewed issue page itself. 
