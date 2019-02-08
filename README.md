@@ -258,6 +258,8 @@ with a separate [__GitHub__](https://github.com/) branch.
 * SECRET_KEY
 * STRIPE_PUBLISHABLE
 * STRIPE_SECRET
+* EMAIL_ADDRESS
+* EMAIL_PASSWORD
 
 # Credits
 ### Acknowledgments
