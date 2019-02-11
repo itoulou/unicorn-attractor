@@ -1129,6 +1129,7 @@ pre {
     border-radius: 50%;
     height: 12rem;
     width: 12rem;
+    border: 1px solid #9c2323;
 }
 
 .view-issue-votes-row {
