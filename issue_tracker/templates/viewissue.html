@@ -4,12 +4,14 @@
 {% block jquery %}
 <script>
 $(document).ready(function(){
+    // confirm message to delete issue
     $(".delete-issue").click(function(){
        return confirm("Are sure you want to delete your Issue?"); 
     });
     $('#myModal').on('shown.bs.modal', function () {
         $('#myInput').focus();
     });
+    // Done button to signify issue fixed
     $('.done-btn').click(function(e){
         e.preventDefault();
         var this_ = $(this)
@@ -29,6 +31,7 @@ $(document).ready(function(){
             });
         }   
     });
+    // change vote number
     function updateVotes(tag, votes){
         tag.text(votes);
     }
@@ -38,23 +41,17 @@ $(document).ready(function(){
     var voteUrl = "{% url 'issue-vote' issue.id %}";
     var vote = parseInt($(".vote-count").attr("data-votes"), 10);
     var voteClicked = $(this).hasClass("voted");
-    // var featureId = window.location.pathname.split("/issue-requests/")[1].split("/")[0];
     $.ajax({
         url: voteUrl,
         method: "POST",
         dataType: 'json',
         success: function(data){
-            console.log(data);
           if (voteClicked){
-              console.log(data.up_vote);
               vote = data.vote_number;
-              console.log("newVote " + vote);
               updateVotes($(".vote-count"), vote);
               
           } else {
-              console.log(data.up_vote);
               vote = data.vote_number;
-              console.log("original vote " + vote);
               updateVotes($(".vote-count"), vote);
           } 
           
@@ -68,6 +65,7 @@ $(document).ready(function(){
 <div class="row">
     {% for author_image in author_image %}
     {% if author_image.image.url != None %}
+    <!-----Profile picture----->
     <div class="col-xs-12 col-sm-3 author-image-row">
         <img  class="author-image" src="{{ author_image.image.url }}" alt="" height="500px" width="500px">
     </div>
@@ -77,16 +75,19 @@ $(document).ready(function(){
     </div>
     {% endif %}
     {% endfor %}
+    <!-----Issue Title sm/md/lg----->
     <div class="col-sm-9 view-issue-title-div hidden-xs">
         <h1><strong>{{ issue.title }}</strong></h1>
     </div>
 </div>
 <div class="row">
+    <!-----Issue author----->
     <div class="col-xs-12 text-center view-issue-author">
         <h3>by {{ issue.author }}</h3>
     </div>
 </div>
 <div class="row view-issue-votes-row">
+    <!----Upvote mobile----->
     <div class="col-xs-6 text-center view-issue-votes hidden-sm hidden-md hidden-lg">
         <form>
         {% csrf_token %}
@@ -98,6 +99,7 @@ $(document).ready(function(){
         </form>
         <h3 class="vote-count" data-votes="{{ issue.vote.count }}">{{ issue.vote.count }}</h3>
     </div>
+    <!----Done Icon mobile----->
     <div class="col-xs-6 text-center hidden-sm hidden-md hidden-lg">
         {% if issue.author == request.user %}
             <form action="" method="POST">
@@ -117,19 +119,23 @@ $(document).ready(function(){
 </div>
 <br>
 <div class="row">
+    <!--Issue title mobile-->
     <div class="col-xs-12 view-issue-title-div hidden-sm hidden-md hidden-lg">
         <h1><strong>{{ issue.title }}</strong></h1>
     </div>
 </div>
 <div class="row tag-pub-date-row">
+    <!--Issue tag-->
     <div class="col-xs-6 text-center ">
         <p>{{ issue.tag }}</p>
     </div>
+    <!--Issue published date-->
     <div class="col-xs-6 text-center ">
         <p>{{ issue.published_date }}</p>
     </div>
 </div>
 <div class="row">
+    <!--Issue content mobile-->
     <div class="col-xs-12 view-issue-content hidden-sm hidden-md hidden-lg">
         <pre>{{ issue.content }}</pre>
     </div>
@@ -137,6 +143,7 @@ $(document).ready(function(){
 <div class="row">
     <div class="col-sm-3">
         <div class="row">
+            <!--Upvote sm/md/lg-->
             <div class="col-sm-12 text-center hidden-xs  view-issue-votes">
                 <form>
                 {% csrf_token %}
@@ -150,6 +157,7 @@ $(document).ready(function(){
             </div>
         </div>   
         <div class="row">
+            <!----Done Icon sm/md/lg----->
             <div class="col-sm-12 text-center hidden-xs">
                 {% if issue.author == request.user %}
                     <form action="" method="POST">
@@ -168,12 +176,13 @@ $(document).ready(function(){
             </div>
         </div>    
     </div>
+    <!----Issue content sm/md/lg----->
     <div class="col-sm-9 view-issue-content hidden-xs">
         <pre>{{ issue.content }}</pre>
     </div>
 </div>
 <br>
-
+<!----Delete/Edit----->
 {% if issue.author == request.user %}
 <div class="row edit-delete-issue-row ">
     <div class="col-xs-6 text-center">
@@ -190,6 +199,7 @@ $(document).ready(function(){
     </div>
 </div>
 {% endif %}
+<!----Add/View Comments----->
 <div class="row add-comment-row">
     {% if comment_count > 3 %}
     <div class="col-xs-6 text-center">
@@ -215,11 +225,9 @@ $(document).ready(function(){
         <p>{{ comment_count }} comment{{ comments_with_images | pluralize }}</p>
     </div>
 </div>
-
 <!-- Button trigger modal -->
-
-
 <!-- Modal -->
+<!---Add comment modal--->
 <div class="modal fade" id="addComments" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -240,9 +248,8 @@ $(document).ready(function(){
     </div>
   </div>
 </div>
-
-
 <!-- Modal -->
+<!---View comments modal--->
 <div class="modal fade" id="viewComments" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -276,6 +283,7 @@ $(document).ready(function(){
     </div>
   </div>
 </div>
+<!---First 3 comments--->
 {% for comment in first_three_comments %}
 <div class="row">
     <div class="col-xs-12 col-lg-6">

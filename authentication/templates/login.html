@@ -2,6 +2,7 @@
 {% load bootstrap_tags %}
 {% block title %}Login{% endblock %}
 {% block content %}
+<!---login form--->
 <div class="row">
     <div class="col-xs-12 login-form">
         <form method="POST">
@@ -13,6 +14,7 @@
         </form>
     </div>
 </div>
+<!---error message---->
 {% if messages %}
     <div>
     {% for message in messages %}

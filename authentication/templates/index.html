@@ -12,12 +12,14 @@
 <script type="text/javascript" src="{% static 'js/stripe.js' %}"></script>
 {% endblock %}
 {% block content %}
+<!--jumbotron-->
 <div class="row">
     <div class="col-xs-12 text-center jumbotron index-jumbotron">
       <h3>Welcome {% if user.is_authenticated %}{{ user.username.title }}{% endif %} to </h3>
       <h1>Unicorn Attractor</h1>
     </div>
 </div>
+<!----message if logged in/out successfully---->
 <div class="row">
   <div class="col-xs-12 text-center index-message">
   {% if messages %}
@@ -27,6 +29,7 @@
   {% endif %}
   </div>
 </div>
+<!----description of how user can pay/use the site---->
 <div class="row">
   <div class="col-xs-12 text-center">
     {% if user_subscribed == False and not user.is_authenticated %}
@@ -40,6 +43,7 @@
     {% endif %}
   </div>
 </div>
+<!-----Subscription button------>
 {% if logged_in %}
 <div class="row">
     <div class="col-xs-12 text-center subscribe-btn-row">
@@ -65,6 +69,7 @@
   </div>
 </div>
 {% endif %}
+<!----Placeholder text----->
 <div class="row">
   <div class="col-xs-12 text-center">
     <p class="index-p-two">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
@@ -87,6 +92,7 @@
     Fuga, aliquid est tempore molestiae.</p>
   </div>
 </div>
+<!----modal to subscribe---->
 <div class="modal fade" id="subscribe" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
           <div class="modal-content">

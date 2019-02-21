@@ -15,6 +15,7 @@
 {% for message in messages %}
 <h3>{{ message }}</h3>
 {% endfor %}
+<!---checkout form---->
 <div class="row">
     <div class="col-xs-12">
         <form role="form" method="POST" id="payment-form" action="{% url 'single_payment_checkout' pk %}">
